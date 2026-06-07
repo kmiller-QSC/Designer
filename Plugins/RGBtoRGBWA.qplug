@@ -1,0 +1,148 @@
+PluginInfo =
+{
+  Name = "RGB to RGBWA",
+  Version = "1.0",
+  Id = "57bf0974-b532-4646-94fe-d42948afafdb",
+  Author = "T. Holt-Ronczy // Q-SYS",
+  Description = "RGB to RGBWA Converter",
+  ShowDebug = true,
+};
+
+function GetColor(props)
+  return { 255,255,255}
+end
+  
+function GetPrettyName(props)
+  return PluginInfo.Name
+end
+
+function GetProperties()
+  props = {}
+  return props
+end
+
+
+function GetControls(props)
+  local ctrl = {};
+	
+  table.insert(ctrl,{
+    Name = "RGB",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Max = 255,
+    Min = 0,
+    UserPin = false,
+    PinStyle = "Input",
+    Count = 3
+  })
+
+  table.insert(ctrl,{
+    Name = "RGBWA",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Max = 255,
+    Min = 0,
+    UserPin = false, 
+    PinStyle = "Output",
+    Count = 5
+  })
+
+  return ctrl;
+end
+
+function GetControlLayout(props)
+  layout = {};
+  graphics = {};
+
+  layout["RGB 1"]={PrettyName="1-Red",Style="None"}
+  layout["RGB 2"]={PrettyName="2-Green",Style="None"}
+  layout["RGB 3"]={PrettyName="3-Blue",Style="None"}
+
+  layout["RGBWA 1"]={PrettyName=" 1-Red",Style="None"}
+  layout["RGBWA 2"]={PrettyName=" 2-Green",Style="None"}
+  layout["RGBWA 3"]={PrettyName=" 3-Blue",Style="None"}
+  layout["RGBWA 4"]={PrettyName=" 4-White",Style="None"}
+  layout["RGBWA 5"]={PrettyName=" 5-Amber",Style="None"}
+
+  return layout,graphics;
+end
+
+if Controls then
+  ---------------------------------- Functions -----------------------------------
+  -- Function to clamp a value between 0 and 255 and return the floored value
+  function TheClamps(val)
+    return math.floor(math.max(0, math.min(255,val)))
+  end 
+
+  -- Function to convert a number to a hexadecimal string, clamping the value between 0-255
+    function toHex(num)
+      -- Convert to hex, and clamp value between 0-255
+      return string.format("%02X", TheClamps(num)) 
+    end 
+
+  -- Function to convert RGBA values to a hexadecimal color string, including White and Amber components
+    function RGBA2HEX(r,g,b,w,a)
+      -- Add White and Amber values back to RGB and clamp each value between 0-255
+      local red = TheClamps(r + w + a)
+      local green = TheClamps(g + w) -- Amber is not added to Green
+      local blue = TheClamps(b + w)
+      
+      -- Concatenate the hexadecimal values of each color component to form the HEX color code
+      return '#'..toHex(red)..toHex(green)..toHex(blue)
+    end 
+  
+  -- Function to calculate the White (W) value from Red (R), Green (G), and Blue (B) values
+  function GetWhiteValues(r,g,b)
+    -- Calculate the average of the RGB values and divide by 6 for the White value
+    local w = (r + g + b)/6
+    return w
+  end 
+
+  -- Function to calculate the Amber (A) value from Red (R) and Green (G) values
+  function GetAmberValues(r,g)
+    local a = 0
+    if r ~= 0 then 
+      -- If Red is not 0, calculate the average of Red and Green values
+      a = (r + g)/2
+    else 
+      -- If Red is 0, then Amber is set to 0
+      a = 0
+    end 
+    -- Return half of the calculated Amber value
+    return a/2
+  end
+
+  -- Function to apply easing to the White color component
+  function WhiteEasing(color)
+    -- Reduce the intensity of the color by 2/3 to account for the addition of White
+    return color*0.66
+  end
+
+
+  function RGBWAtoHex()
+    -- Clamp the input RGB values and calculate the White and Amber values
+    local rInput = TheClamps(Controls.RGB[1].Value)
+    local gInput = TheClamps(Controls.RGB[2].Value)
+    local bInput = TheClamps(Controls.RGB[3].Value)
+    local w = GetWhiteValues(rInput,gInput,bInput)
+    local a = GetAmberValues(rInput,gInput)
+
+    -- Apply White Easing to the input RGB values
+    local r = WhiteEasing(rInput,w)
+    local g = WhiteEasing(gInput, w)
+    local b = WhiteEasing(bInput, w)
+
+    -- Print the calculated RGBWA values
+    print(r,g,b,w,a)
+
+    Controls.RGBWA[1].Value = r
+    Controls.RGBWA[2].Value = g
+    Controls.RGBWA[3].Value = b
+    Controls.RGBWA[4].Value = w      
+    Controls.RGBWA[5].Value = a
+  end
+
+  Controls.RGB[1].EventHandler = function() RGBWAtoHex() end
+  Controls.RGB[2].EventHandler = function() RGBWAtoHex() end
+  Controls.RGB[3].EventHandler = function() RGBWAtoHex() end
+end

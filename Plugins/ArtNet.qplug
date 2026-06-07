@@ -1,0 +1,665 @@
+-- ArtNet Controller
+-- by Tom Bland
+-- June 2021
+
+--[[
+  Notes:
+
+]]--
+
+Version = "2.0"
+
+PluginInfo =
+{
+  Name = "Art-Net Controller",
+  Version = Version,
+  Id = "TBLAND.ART-NET-CONTROLLER.V"..Version,
+  Description = "[["..Version.." re-write for comunity release]]",
+  ShowDebug = false
+}
+
+blockCol = {0, 0x57, 0x96}
+
+function GetPrettyName(props)
+  return "Art-Net Controller V"..Version
+end
+
+function GetColor(props)
+  return blockCol
+end
+
+
+function GetProperties()
+  props = {}
+
+  table.insert( props, {
+    Name = "Channels",
+    Type = "integer",
+    Min = 2,
+    Max = 512,
+    Value = 16,
+  })
+
+  return props
+end
+
+function RectifyProperties(props)
+  return props
+end
+
+
+function GetControls(props)
+  ctrls = {}
+
+  table.insert( ctrls,
+	{
+		Name = "IP Address",
+    ControlType = "Text",
+    Count = 1,
+    PinStyle = "None",
+    UserPin = false
+	})
+
+  table.insert(ctrls,{
+    Name = "Net",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 0,
+    Max = 127,
+    Count = 1,
+    PinStyle = "None",
+    UserPin = false
+  })
+
+  table.insert(ctrls,{
+    Name = "SubNet",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 0,
+    Max = 15,
+    Count = 1,
+    PinStyle = "None",
+    UserPin = false
+  })
+
+  table.insert(ctrls,{
+    Name = "Universe",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 0,
+    Max = 15,
+    Count = 1,
+    PinStyle = "None",
+    UserPin = false
+  })
+
+  table.insert(ctrls,{
+    Name = "Channel",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 0,
+    Max = 255,
+    Count = props["Channels"].Value,
+    PinStyle = "Input",
+    UserPin = false
+  })
+
+  table.insert(ctrls,{
+    Name = "RefreshRate",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 0.1,
+    Max = 5,
+    Count = 1,
+    PinStyle = "None",
+    UserPin = false
+  })
+
+  table.insert(ctrls,{
+    Name = "ResetButton",
+    ControlType = "Button",
+    ButtonType = "Momentary",
+    Count = 1,
+    PinStyle = "None",
+    UserPin = false
+  })
+
+  return ctrls
+end
+
+
+function GetPins(props)
+  local pins = {}
+
+  return pins
+end
+
+function GetComponents(props)
+  local components = {}
+
+  return components
+end
+
+function GetWiring(props)
+  local wiring = {}
+
+  return wiring
+end
+
+--[[
+  --------------------
+  UI LIBRARY FUNCTIONS
+  --------------------
+]]--
+function newLabel(anchor, size, column, row, text, align, bold, textsize, rowSpan, style)
+  if rowSpan == nil then rowSpan = 1 end
+  if align == nil then align = "Left" end
+  if bold == nil then bold = false end
+  if textsize == nil then textsize = 12 end
+  if style == nil then style = "Normal" end
+  return {
+    Type = "Label",
+    Text = text,
+    HTextAlign = align,
+    StrokeWidth = 0,
+    IsBold = bold,
+    TextBoxStyle = style,
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1] * rowSpan, size[2]},
+    TextSize = textsize
+  }
+end
+
+function newGroupBox(anchor, size, text)
+  return{
+    Type = "GroupBox",
+    Text = text,
+    HTextAlign = "Left",
+    StrokeWidth = 1,
+    CornerRadius = 0,
+    Fill = { 0xB3, 0xE0, 0xFF },
+    Position = anchor,
+    Size = size
+  }
+end
+
+function setControlAsLabel(anchor, size, column, row, name, rowSpan)
+  if rowSpan == nil then rowSpan = 1 end
+  return {
+    PrettyName = name,
+    Style = "Text",
+    HTextAlign = "Left",
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1] * rowSpan, size[2]},
+    IsReadOnly = true,
+    TextBoxStyle = "NoBackground",
+    Color = { 0, 0, 0 }
+  }
+end
+
+function setButtonLayout2(anchor, size, column, row, name, backgroundCol)
+  return {
+    PrettyName = name,
+    Style = "Button",
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1], size[2]},
+    Legend = name,
+    IsReadOnly = false,
+    Color = backgroundCol
+  }
+end
+
+function setControlLayout(anchor, size, column, row, name, type, rowSpan)
+  if rowSpan == nil then rowSpan = 1 end
+  return {
+    PrettyName = name,
+    Style = type,
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1] * rowSpan, size[2]},
+    IsReadOnly = false
+  }
+end
+
+function setControlReadonlyLayout(anchor, size, column, row, name, type, rowSpan)
+  if rowSpan == nil then rowSpan = 1 end
+  return {
+    PrettyName = name,
+    Style = type,
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1] * rowSpan, size[2]},
+    IsReadOnly = true
+  }
+end
+
+function setTextControlLayout(anchor, size, column, row, name, type, textSize, rowSpan)
+  if rowSpan == nil then rowSpan = 1 end
+  return {
+    PrettyName = name,
+    Style = type,
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1] * rowSpan, size[2]},
+    TextFontSize = textSize,
+    IsReadOnly = false
+  }
+end
+
+function setControlInvisible(name)
+  return {
+    PrettyName = name,
+    Style = "Text",
+    Position = {0,0},
+    Size = {0,0},
+    Margin = 0,
+    TextBoxStyle = "NoBackground",
+    IsReadOnly = true
+  }
+end
+
+function setColouredControlLayout(anchor, size, column, row, name, type, rowSpan, backgroundCol)
+  if rowSpan == nil then rowSpan = 1 end
+  return {
+    PrettyName = name,
+    Style = type,
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1] * rowSpan, size[2]},
+    IsReadOnly = false,
+    Color = backgroundCol
+  }
+end
+
+function setButtonLayout(anchor, size, column, row, name, legend, rowSpan, col)
+  if rowSpan == nil then rowSpan = 1 end
+  return {
+    Legend = legend,
+    PrettyName = name,
+    Style = "Button",
+    TextFontSize = 10,
+    Padding = 0,
+    Position = { anchor[1] + (size[1] * column),
+                 anchor[2] + (size[2] * row) },
+    Size = { size[1] * rowSpan, size[2]},
+    Color = col,
+    IsReadOnly = false
+  }
+end
+
+local pagenames = {
+  "Settings",
+  "Levels"
+}
+
+function GetPages()
+  pages = {}
+  for ix,name in ipairs(pagenames) do
+    table.insert( pages, { name = pagenames[ix] })
+  end
+  return pages
+end
+
+--[[
+  --------
+  BUILD UI
+  --------
+]]--
+function GetControlLayout(props)
+  local layout = {}
+  local graphics = {}
+
+  local CurrentPage = pagenames[props["page_index"].Value]
+
+  local contentAnchor = {0,0}
+  local cellSize = {30,30}
+
+  if CurrentPage=="Settings" then
+    cellSize = {52, 20}
+    table.insert(graphics, newLabel(contentAnchor, cellSize, 0, 0, "Bcast:", "Right", true))
+    layout["IP Address"] = setControlLayout(contentAnchor, cellSize, 1, 0, "IP Address", "Text", 2)
+
+    table.insert(graphics, newLabel(contentAnchor, cellSize, 0, 1, "Net:", "Right", true))
+    layout["Net"] = setControlLayout(contentAnchor, cellSize, 1, 1, "Net", "Text", 2)
+
+    table.insert(graphics, newLabel(contentAnchor, cellSize, 0, 2, "SubNet:", "Right", true))
+    layout["SubNet"] = setControlLayout(contentAnchor, cellSize, 1, 2, "SubNet", "Text", 2)
+
+    table.insert(graphics, newLabel(contentAnchor, cellSize, 0, 3, "Universe:", "Right", true))
+    layout["Universe"] = setControlLayout(contentAnchor, cellSize, 1, 3, "Universe", "Text", 2)
+
+    table.insert(graphics, newLabel(contentAnchor, {cellSize[1]*2, cellSize[2]}, 0, 5, "Refresh Rate (s):", "Right", true))
+    layout["RefreshRate"] = setControlLayout(contentAnchor, cellSize, 2, 5, "DMX Refresh Rate", "Text", 1)
+
+    table.insert(graphics, newLabel(contentAnchor, {cellSize[1]*2, cellSize[2]}, 0, 7, "Reset Networking:", "Right", true))
+    layout["ResetButton"] = {
+      Legend = "Reset",
+      PrettyName = "Reset Socket",
+      Style = "Button",
+      TextFontSize = 10,
+      Padding = 0,
+      Position = { contentAnchor[1] + (cellSize[1] * 2),
+                   contentAnchor[2] + (cellSize[2] * 7) },
+      Size = { cellSize[1] * 1, cellSize[2]},
+      IsReadOnly = false
+    }
+  elseif CurrentPage == "Levels" then
+    local n = props["Channels"].Value
+    local columnValue = 0
+    local rowValue = 0
+    cellSize = {32, 32}
+    local containerPosition = {0,0}
+    local containerPadding = {5,5}
+    local overflowLevel = math.ceil(math.sqrt(n))
+    local numberCellsInContainer = {overflowLevel*2, overflowLevel}
+
+    local containerSize = 0
+    if (overflowLevel * (overflowLevel -1) < n) then
+      containerSize = {(cellSize[1]*numberCellsInContainer[1]) + (containerPadding[1] * 2),
+                       (cellSize[2]*numberCellsInContainer[2]) + containerPadding[2] + 10}
+    else
+      containerSize = {(cellSize[1]*numberCellsInContainer[1]) + (containerPadding[1] * 2),
+                       (cellSize[2]*numberCellsInContainer[2]) + containerPadding[2] + 10 - cellSize[1]}
+    end
+
+    contentAnchor = {containerPosition[1] + containerPadding[1],
+                     containerPosition[2] + containerPadding[2]}
+
+    table.insert(graphics, newGroupBox(containerPosition, containerSize))
+
+    for i=1,n do
+      if((i-1) >= overflowLevel and (i-1) % overflowLevel == 0) then
+       columnValue = 0
+       rowValue = rowValue + 1
+      end
+      table.insert(graphics, newLabel(contentAnchor, cellSize, columnValue, rowValue, tostring(i), "Right", true))
+      columnValue = columnValue + 1
+      layout["Channel "..i] = setControlLayout(contentAnchor, cellSize, columnValue, rowValue, i, "Knob")
+      columnValue = columnValue + 1
+    end
+  end
+  return layout, graphics
+end
+
+--[[
+  ---------------
+  FUNCTIONAL CODE
+  ---------------
+]]--
+local BitwiseRshift = bit32.rshift -- Shift bits to the right
+local BitwiseLshift = bit32.lshift -- Shift bits to the right
+local BitAnd        = bit32.band   -- Bitwise AND
+local Socket
+
+function restartSocket()
+  Socket:Close()
+  Socket:Open(nil,0x1936)
+end
+
+--MASTER TIMER
+DmxTimer = nil
+
+--Message Streamer
+function build(t)
+  local s = ""
+  for k,v in pairs(t) do
+    s = s .. string.char(v)
+  end
+  return s
+end
+
+--Send a reply to an ART POLL
+function sendArtPollReply()
+  local theData = {
+    0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0, --Art-Net\0
+    0x00, 0x21, -- Opcode (ArtPollReply)
+
+    192, 168, 10, 3, --IP Address --THIS SHOULD BE THE IP ADDRESS OF THE Q-CORE
+    0x36, 0x19, --Port (low byte first)
+    0x00, 0x00, --firmware version
+    0x00, 0x00, --netSwitch, subSwitch
+    0x28, 0xf9, --OEMhi, OEM Low (0x28f9 = Tom Bland Q-SYS Plugin)
+    0x00,       --Ubea Version
+    tonumber("00110000", 2), --Status 1
+    0x42, 0x54, --EstaMan
+
+    0x54, 0x20, 0x42, 0x4c, 0x41, 0x4e, 0x44, 0x20, 0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0x00, 0x00, 0x00,   --Short Name --T BLAND Art-Net
+
+    0x51, 0x2d, 0x53, 0x59, 0x53, 0x20, 0x41, 0x72, 0x74, 0x6e, 0x65, 0x74, 0x20, 0x43, 0x6f, 0x6e,
+    0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x20, 0x62, 0x79, 0x20, 0x54, 0x20, 0x42, 0x4c, 0x41,
+    0x4e, 0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,--Long Name - Q-SYS Artnet Controller by T BLAND
+
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, --node report
+
+    0x00, 0x01, --number of ports (TR or RX)
+    tonumber("01000000", 2), --Port Type 0
+    0x00, 0x00, 0x00, --Port Type 1-3
+    tonumber("10000000", 2), --Port 0 Good Input
+    0x00, 0x00, 0x00, --Port 1-3 good input
+    0x00, 0x00, 0x00, 0x00, --Port 0-4 good output
+    0x00, 0x00, 0x00, 0x00, --Port 0-4 input bits 3-0 of address
+    0x00, 0x00, 0x00, 0x00, --Port 0-4 output bits 3-0 of address
+    0x00, --macros
+    0x00, --remote
+    0x00, 0x00, 0x00, --spare
+    0x00, --style
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, --MAC
+    0x00, 0x00, 0x00, 0x00, --BindIP
+    tonumber("00000100", 2), --Status2
+
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 --filler
+  }
+
+  local str = build(theData)
+  local err = pcall(
+    function()
+      Socket:Send("255.255.255.255", 0x1936, str) --should technically be 2.255.255.255 I think. But then the IP should technically be derived from the MAC address... meh!
+    end
+  )
+  if (err == false) then restartSocket() end
+
+end
+
+--transmit an ArtPoll
+function sendArtPoll()
+  local theData = {
+    0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0, --Art-Net\0
+    0x00, 0x20, -- Opcode (ArtPoll)
+    0x00, 0x0e, -- Protocol Version (14)
+    0,    -- TalkToMe
+    0x10 -- Priority (Low)
+  }
+  local str = build(theData)
+  local err = pcall(
+    function()
+      Socket:Send("255.255.255.255", 0x1936, str) --should technically be 2.255.255.255 I think. But then the IP should technically be derived from the MAC address... meh!
+    end
+  )
+  if (err == false) then restartSocket() end
+end
+
+--Send DMX values
+function updateDMX()
+  local numChannels = Properties.Channels.Value
+  local numChannelsModified = numChannels
+  if(numChannels % 2 ~= 0)then numChannelsModified = numChannels + 1 end
+
+  local theData = {
+    0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0, --Art-Net\0
+    0x00, 0x50, -- Opcode (ArtDMX)
+    0x00, 0x0e, -- Protocol Version (14)
+    0, -- Sequence (disabled)
+    0, -- Physical
+    BitwiseLshift(subNet.Value, 4) + universe.Value, -- b7-4 = Sub-net. b3-0 = universe
+    net.Value, -- b7-0 = Net
+    BitwiseRshift(BitAnd(numChannelsModified, 0xFF), 8),
+    BitAnd(numChannelsModified, 0xFF)  --value should be an even number in the range 2 – 512.
+  }
+
+  for i=1,numChannels,1 do --for start, until, incrementby
+    local val = channel[i].Value
+    if(val > 255) then val = 255 end
+    if(val < 0) then val = 0 end
+    theData[#theData+1] = val
+  end
+
+
+  if (numChannelsModified ~= numChannels) then
+    local i = numChannels
+    while (i < numChannelsModified) do
+      theData[#theData+1] = 0
+      i = i + 1
+    end
+  end --pad to multiple of two
+
+  local str = build(theData)
+
+  local err = pcall(
+    function()
+      Socket:Send(ipAddress.String, 0x1936, str)
+    end
+  )
+  if (err == false) then
+    print("Couldn't update DMX")
+    restartSocket()
+  end
+end
+
+--Check to see if recieved package is an Art Net data package
+function isArtnet(data)
+  local an = {0x41, 0x72, 0x74, 0x2d, 0x4e, 0x65, 0x74, 0} --Art-Net\0
+  if(#data < 8) then return false end
+  for i=1,8,1 do
+      if(string.byte(data:sub(i,i)) ~= an[i]) then
+        return false
+      end
+  end
+  return true
+end
+
+--Check to see if recieved package is an Art Poll package
+function isArtPoll(data)
+  if(#data < 10) then return false end
+  local msb = string.byte(data:sub(9,9)) == 0x00
+  local lsb = string.byte(data:sub(10,10)) == 0x20
+  if(msb == true and lsb == true) then
+    return true
+  end
+  return false
+end
+
+--Socket recieve hanlder
+function rxHandler(udp, packet)
+  if(isArtnet(packet.Data) == true) then
+    if(isArtPoll(packet.Data)) then
+      sendArtPollReply()
+    end
+  end
+end
+
+--[[
+  -------
+  RUNTIME
+  -------
+]]--
+if Controls then
+  numChannels = Properties["Channels"].Value
+
+  ipAddress = Controls["IP Address"]
+  net = Controls["Net"]
+  subNet = Controls["SubNet"]
+  universe = Controls["Universe"]
+  refreshRate = Controls["RefreshRate"]
+  resetButton = Controls["ResetButton"]
+
+  channel = {}
+  for i=1, numChannels do
+    channel[i] = Controls["Channel"][i]
+  end
+
+  function checkIP()
+    if (string.len(ipAddress.String) < 8) then
+      ipAddress.String = "255.255.255.255"
+    end
+    print("Destination IP: ", ipAddress.String)
+  end
+
+  print("Creating Socket")
+  checkIP()
+  Socket = UdpSocket.New()
+  Socket.Data = rxHandler
+  Socket:Open(nil,0x1936)
+
+  print("Creating Timer for Artnet refresh")
+  DmxTimer = Timer.New()
+  DmxTimer.EventHandler = updateDMX
+  DmxTimer:Start(refreshRate.Value)
+
+  print("Creating Timer for ArtPoll")
+  ArtPollTimer = Timer.New()
+  ArtPollTimer.EventHandler = sendArtPoll
+  ArtPollTimer:Start(2.75) --It is a requirement of Art-Net that all controllers broadcast an ArtPoll every 2.5 to 3 seconds.
+
+  refreshRate.EventHandler = function()
+    DmxTimer:Stop()
+    DmxTimer:Start(refreshRate.Value)
+  end
+
+  resetButton.EventHandler = function()
+    print("Resetting Network Socket")
+    DmxTimer:Stop()
+    ArtPollTimer:Stop()
+    Socket:Close()
+
+    print("Creating Socket")
+    checkIP()
+    Socket = UdpSocket.New()
+    Socket.Data = rxHandler
+    Socket:Open(nil,0x1936)
+
+    ArtPollTimer:Start(2.75)
+    DmxTimer:Start(refreshRate.Value)
+  end
+
+  ipAddress.EventHandler = function()
+    checkIP()
+  end
+
+  print("Running.")
+end
+
+

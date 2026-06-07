@@ -1,0 +1,78 @@
+PluginInfo =
+{
+  Name = "Hex to RGB",
+  Version = "1.0",
+  Id = "d74e7ac7-33ca-4fe9-9b2c-952ba7d2ae13",
+  Author = "K. Rhodus // Q-SYS",
+  Description = "Hex to RGB Converter",
+  ShowDebug = true,
+};
+
+function GetColor(props)
+  return { 255,255,255}
+end
+  
+function GetPrettyName(props)
+  return PluginInfo.Name
+end
+
+function GetProperties()
+  props = {}
+  return props
+end
+
+
+function GetControls(props)
+  local ctrl = {};
+	
+  table.insert(ctrl,{
+  Name = "RGB",
+  ControlType = "Knob",
+  ControlUnit = "Integer",
+  Max = 255,
+  Min = 0,
+  UserPin = false,
+  PinStyle = "Output",
+  Count = 3
+  })
+
+    table.insert(ctrl,{
+  Name = "Hex",
+  ControlType = "Indicator",
+  IndicatorType = "Text",
+  UserPin = false, 
+  PinStyle = "Input",
+  Count = 1
+  })
+
+  return ctrl;
+end
+
+function GetControlLayout(props)
+  layout = {};
+  graphics = {};
+
+  layout["Hex"]={PrettyName=" Hex",Style="None"}
+  layout["RGB 1"]={PrettyName="1-Red",Style="None"}
+  layout["RGB 2"]={PrettyName="2-Green",Style="None"}
+  layout["RGB 3"]={PrettyName="3-Blue",Style="None"}
+
+
+  return layout,graphics;
+end
+
+if Controls then
+    Controls.Hex.EventHandler = function(ctl)
+        if string.sub(ctl.String,1,1) == "#" and string.len(ctl.String) == 7 then
+            Controls.RGB[1].Value = tonumber(string.sub(ctl.String,2,3),16)
+            Controls.RGB[2].Value = tonumber(string.sub(ctl.String,4,5),16)
+            Controls.RGB[3].Value = tonumber(string.sub(ctl.String,6,7),16)
+        end 
+    end 
+
+    if string.sub(Controls.Hex.String,1,1) == "#" and string.len(Controls.Hex.String) == 7 then
+        Controls.RGB[1].Value = tonumber(string.sub(Controls.Hex.String,2,3),16)
+        Controls.RGB[2].Value = tonumber(string.sub(Controls.Hex.String,4,5),16)
+        Controls.RGB[3].Value = tonumber(string.sub(Controls.Hex.String,6,7),16)
+    end 
+end

@@ -1,0 +1,564 @@
+PluginInfo =
+  {
+    Name = "Super Buffer",
+    Version = "1.0",
+    Id = "163959dd-cc69-46cd-9da6-611eab2778bc",
+    Author = "K. Rhodus",
+    Description = "Super Buffer",
+    ShowDebug = false,
+    BuildVersion = "101"
+  };
+
+function GetColor(props)
+  return { 255,255,255}
+end
+  
+function GetPrettyName(props)
+  --return PluginInfo.Name .. " - "..PluginInfo.Version
+  return props["Signal Type"].Value .. " Buffer"
+end
+
+function GetProperties()
+  props = {}
+  table.insert(props, {
+    Name = "Signal Type",
+    Type = "enum",
+    Choices = {"Boolean", "String", "Trigger"},
+    Value = 'String'
+    })
+  table.insert(props, {
+    Name = "Number of Inputs",
+    Type = "integer",
+    Value = 1,
+    Min = 1,
+    Max = 1024,
+    })
+  table.insert(props, {
+    Name = "Output When Disabled",
+    Type = "enum",
+    Choices = {'Set to ""', "Leave Previous Value"},
+    Value = 'Leave Previous Value'
+    })
+  table.insert(props, {
+    Name = "Pulse Output Time",
+    Type = "integer",
+    Value = 1,
+    Min = 1,
+    Max = 3600,
+    Comment = "Time in Seconds"
+    })
+
+  return props
+end
+
+function RectifyProperties(props)
+  props["Output When Disabled"].IsHidden = props["Signal Type"].Value ~= "String"
+  props["Pulse Output Time"].IsHidden = props["Signal Type"].Value ~= "Trigger"
+
+  return props
+end
+
+function GetControls(props)
+  local ctrl = {};
+	
+  table.insert(ctrl,{
+    Name = "Enable",
+    ControlType = "Indicator",
+    IndicatorType = "Led",
+    UserPin = false,
+    PinStyle = "Input",
+    Count = 1
+  })
+
+  if props["Signal Type"].Value == "String" then
+    table.insert(ctrl,{
+      Name = "In",
+      ControlType = "Indicator",
+      IndicatorType = "Text",
+      UserPin = false,
+      PinStyle = "Input",
+      Count = props["Number of Inputs"].Value
+    })
+
+    table.insert(ctrl,{
+      Name = "Out",
+      ControlType = "Indicator",
+      IndicatorType = "Text",
+      UserPin = false, 
+      PinStyle = "Output",
+      Count = props["Number of Inputs"].Value
+    })
+
+  elseif props["Signal Type"].Value == "Trigger" then
+    table.insert(ctrl,{
+      Name = "In",
+      ControlType = "Button",
+      ButtonType = "Trigger",
+      UserPin = false,
+      PinStyle = "Input",
+      Count = props["Number of Inputs"].Value
+    })
+
+    table.insert(ctrl,{
+      Name = "Out",
+      ControlType = "Button",
+      ButtonType = "Trigger",
+      UserPin = false, 
+      PinStyle = "Output",
+      Count = props["Number of Inputs"].Value
+    })
+
+       table.insert(ctrl,{
+      Name = "InPreview",
+      ControlType = "Indicator",
+      IndicatorType = "LED",
+      UserPin = false,
+      PinStyle = "none",
+      Count = props["Number of Inputs"].Value
+    })
+
+    table.insert(ctrl,{
+      Name = "OutPreview",
+      ControlType = "Indicator",
+      IndicatorType = "LED",
+      UserPin = true, 
+      PinStyle = "Output",
+      Count = props["Number of Inputs"].Value
+    })
+
+  elseif props["Signal Type"].Value == "Boolean" then
+     table.insert(ctrl,{
+      Name = "In",
+      ControlType = "Indicator",
+      IndicatorType = "Led",
+      UserPin = false,
+      PinStyle = "Input",
+      Count = props["Number of Inputs"].Value
+    })
+
+    table.insert(ctrl,{
+      Name = "Out",
+      ControlType = "Indicator",
+      IndicatorType = "Led",
+      UserPin = false, 
+      PinStyle = "Output",
+      Count = props["Number of Inputs"].Value
+    })  
+  end
+
+
+
+  return ctrl;
+end
+
+function GetControlLayout(props)
+  layout = {};
+  graphics = {};
+
+  --Constants 
+    --Background
+    table.insert(graphics,{
+      Type="GroupBox",
+      Position={0,0},
+      Size={265,130+props["Number of Inputs"].Value*30},
+      Fill={255,255,255},
+      CornerRadius=0,
+      StrokeColor={0,0,0},
+      StrokeWidth=0,
+    })
+
+    --Header
+    table.insert(graphics,{
+      Type="Label",
+      Text= props["Signal Type"].Value .. " Buffer",
+      Position={0,0},
+      Size={265,40},
+      Color={255,255,255},
+      CornerRadius=0,
+      FontSize=16,
+      Font="Poppins",
+      FontStyle = "Bold",
+      Fill={0,118,191},
+      HTextAlign="Center",
+    })
+
+    --Enable Label
+    table.insert(graphics,{
+      Type="Label",
+      Text="Enable:",
+      Position={59,51},
+      Size={103,30},
+      Color={0,0,0},
+      CornerRadius=0,
+      FontSize=14,
+      Font="Poppins",
+      FontStyle = "Regular",
+      HTextAlign="Center",
+    })
+
+    --Enable GroupBox
+    table.insert(graphics,{
+        Type="GroupBox",
+        Position={59,51},
+        Size={136,30},
+        Fill={255,255,255,0},
+        CornerRadius=8,
+        StrokeColor={0,0,0},
+        StrokeWidth=1,
+      })
+
+    --Enable LED
+    layout["Enable"]={
+        Style="LED",
+        Color={0,255,0},
+        OffColor={255,0,0},
+        UnlinkOffColor=true,
+        Position={140,51},
+        Size={30,30},
+        Margin=6,
+      }
+
+    --Input / Output Labels
+    table.insert(graphics,{
+      Type="Label",
+      Text="Input:",
+      Position={95,85},
+      Size={50,24},
+      Color={0,0,0},
+      CornerRadius=0,
+      FontSize=12,
+      Font="Poppins",
+      FontStyle = "Regular",
+      HTextAlign="Center",
+    })
+
+    table.insert(graphics,{
+      Type="Label",
+      Text="Output:",
+      Position={145,85},
+      Size={50,24},
+      Color={0,0,0},
+      CornerRadius=0,
+      FontSize=12,
+      Font="Poppins",
+      FontStyle = "Regular",
+      HTextAlign="Center",
+    })
+
+  --Controls
+    --Single 
+  if props["Number of Inputs"].Value == 1 then 
+      table.insert(graphics,{
+        Type="GroupBox",
+        Position={59,110},
+        Size={136,30},
+        Fill={255,255,255,0},
+        CornerRadius=8,
+        StrokeColor={0,0,0},
+        StrokeWidth=1,
+      })
+
+      table.insert(graphics,{
+        Type="Label",
+        Text="1:",
+        Position={59,110},
+        Size={36,30},
+        Color={0,0,0},
+        CornerRadius=0,
+        FontSize=12,
+        Font="Poppins",
+        FontStyle = "Medium",
+        HTextAlign="Right",
+      })
+
+
+      if props["Signal Type"].Value == "String" then 
+        layout["In"]={
+          Style="Text",
+          TextBoxStyle = "NoBackground",
+          Stroke = 1,
+          StrokeColor={255,255,255};
+          Color={255,255,255},
+          Position={105,110},
+          Size={30,30},
+        }
+      
+        layout["Out"]={
+          Style="Text",
+          TextBoxStyle = "NoBackground",
+          Stroke = 1,
+          StrokeColor={255,255,255};
+          Color={255,255,255},
+          Position={155,110},
+          Size={30,30},
+        }
+      elseif props["Signal Type"].Value == "Boolean" then 
+        layout["In"]={
+          Style="LED",
+          Color={0,255,0},
+          OffColor={255,0,0},
+          UnlinkOffColor=true,
+          Position={105,110},
+          Size={30,30},
+          Margin = 6,
+        }
+    
+        layout["Out"]={
+            Style="LED",
+            Color={0,255,0},
+            OffColor={255,0,0},
+            UnlinkOffColor=true,
+            Position={155,110},
+            Size={30,30},
+            Margin = 6,
+          }
+      elseif props["Signal Type"].Value == "Trigger" then 
+        layout["In"]={Style="None"}
+        layout["Out"]={Style="None"}
+        
+        layout["InPreview"]={
+          Style="LED",
+          Color={0,255,0},
+          OffColor={255,0,0},
+          UnlinkOffColor=true,
+          Position={105,110},
+          Size={30,30},
+          Margin = 6,
+        }
+    
+        layout["OutPreview"]={
+            Style="LED",
+            Color={0,255,0},
+            OffColor={255,0,0},
+            UnlinkOffColor=true,
+            Position={155,110},
+            Size={30,30},
+            Margin = 6,
+            PrettyName="Out - Pulse"
+          }
+      end
+
+  --Array 
+  else 
+    for i = 1, props["Number of Inputs"].Value do
+      offset = (i-1)*30
+      --Non-Controls 
+        table.insert(graphics,{
+          Type="GroupBox",
+          Position={59,110+offset},
+          Size={136,30},
+          Fill={255,255,255,0},
+          CornerRadius=8,
+          StrokeColor={0,0,0},
+          StrokeWidth=1,
+        })
+
+        table.insert(graphics,{
+          Type="Label",
+          Text=i..":",
+          Position={59,110+offset},
+          Size={36,30},
+          Color={0,0,0},
+          CornerRadius=0,
+          FontSize=12,
+          Font="Poppins",
+          FontStyle = "Medium",
+          HTextAlign="Right",
+        })
+
+      --Controls
+
+        if props["Signal Type"].Value == "String" then
+          layout["In "..i]={
+            Style="Text",
+            TextBoxStyle = "NoBackground",
+            Stroke = 1,
+            StrokeColor={255,255,255};
+            Color={255,255,255},
+            Position={105,110+offset},
+            Size={30,30},
+          }
+      
+          layout["Out "..i]={
+            Style="Text",
+            TextBoxStyle = "NoBackground",
+            Stroke = 1,
+            StrokeColor={255,255,255};
+            Color={255,255,255},
+            Position={105,110},
+            Size={30,30},
+            Position={155,110+offset},
+            Size={30,30},
+          }
+        elseif props["Signal Type"].Value == "Boolean" then
+          layout["In "..i]={
+            Style="LED",
+            Color={0,255,0},
+            OffColor={255,0,0},
+            UnlinkOffColor=true,
+            Position={105,110+offset},
+            Size={30,30},
+            Margin = 6,
+          }
+  
+          layout["Out "..i]={
+            Style="LED",
+            Color={0,255,0},
+            OffColor={255,0,0},
+            UnlinkOffColor=true,
+            Position={155,110+offset},
+            Size={30,30},
+            Margin = 6,
+          }
+
+        elseif props["Signal Type"].Value == "Trigger" then
+          layout["In "..i]={Style="None"}
+          layout["Out "..i]={Style="None"}
+
+          layout["InPreview "..i]={
+            Style="LED",
+            Color={0,255,0},
+            OffColor={255,0,0},
+            UnlinkOffColor=true,
+            Position={105,110+offset},
+            Size={30,30},
+            Margin = 6,
+          }
+  
+          layout["OutPreview "..i]={
+            Style="LED",
+            Color={0,255,0},
+            OffColor={255,0,0},
+            UnlinkOffColor=true,
+            Position={155,110+offset},
+            Size={30,30},
+            Margin = 6,
+            PrettyName ="Out " ..i.." - Pulse"
+          }
+        end
+    end
+  end  
+
+
+  return layout,graphics;
+end
+
+if Controls then
+  print(PluginInfo["Name"])
+  print("-GUID: " .. PluginInfo["Id"])
+  print("-BuildVersion: " .. PluginInfo["BuildVersion"])
+  print("-Version: " .. PluginInfo["Version"])
+  print("-Author: " .. PluginInfo["Author"])  
+  print("------   STARTING QPLUG   -----")
+  function eval(inevt)
+    --print(inevt)
+    -----------STRING-----------  
+    if Properties["Signal Type"].Value == "String" then 
+      if inevt == "all" then
+        if Properties["Number of Inputs"].Value == 1 then 
+          if Controls.Enable.Boolean then 
+            Controls.Out.String = Controls.In.String
+          else
+            if Properties["Output When Disabled"].Value == 'Set to ""' then
+              Controls.Out.String = ""
+            elseif Properties["Output When Disabled"].Value == 'Leave Previous Value' then
+              --Leave Alone
+            end
+          end        
+        else
+          if Controls.Enable.Boolean then 
+            for idx,ctl in ipairs(Controls.Out) do
+              ctl.String = Controls.In[idx].String
+            end
+          else 
+            for idx,ctl in ipairs(Controls.Out) do
+              if Properties["Output When Disabled"].Value == 'Set to ""' then
+                ctl.String = ""
+              elseif Properties["Output When Disabled"].Value == 'Leave Previous Value' then
+              end        
+            end
+          end
+        end
+      elseif inevt == "single" then
+        if Controls.Enable.Boolean then 
+          Controls.Out.String = Controls.In.String
+        else
+          if Properties["Output When Disabled"].Value == 'Set to ""' then
+            Controls.Out.String = ""
+          elseif Properties["Output When Disabled"].Value == 'Leave Previous Value' then
+            --Leave Alone
+          end
+        end
+      else  --Multiple Controls
+        if Controls.Enable.Boolean then 
+          Controls.Out[inevt].String = Controls.In[inevt].String
+        else
+          if Properties["Output When Disabled"].Value == 'Set to ""' then
+            Controls.Out[inevt].String = ""
+          elseif Properties["Output When Disabled"].Value == 'Leave Previous Value' then
+            --Leave Alone
+          end
+        end
+      end
+    -----------BOOLEAN-----------  
+    elseif Properties["Signal Type"].Value == "Boolean" then
+      if Controls.Enable.Boolean then 
+        if inevt == "all" then
+          if Properties["Number of Inputs"].Value == 1 then 
+            Controls.Out.Boolean = Controls.In.Boolean
+          else
+            for idx,ctl in ipairs(Controls.Out) do
+              ctl.Boolean = Controls.In[idx].Boolean
+            end
+          end
+        elseif inevt == "single" then
+            Controls.Out.Boolean = Controls.In.Boolean
+        else  --Multiple Controls
+          Controls.Out[inevt].Boolean = Controls.In[inevt].Boolean
+        end
+      else
+        if Properties["Number of Inputs"].Value == 1 then 
+          Controls.Out.Boolean = false
+        else
+          for idx,ctl in ipairs(Controls.Out) do
+            ctl.Boolean = false
+          end
+        end
+      end
+    -----------TRIGGER-----------  
+    elseif Properties["Signal Type"].Value == "Trigger" then    --Need logic to fix false preview when enabling / starting plugin
+      if inevt == "all" then
+        --do nothing since it's trigger time
+      elseif inevt == "single" then
+        Controls.InPreview.Boolean = true
+        Timer.CallAfter(function() Controls.InPreview.Boolean = false end, .2)
+        if Controls.Enable.Boolean then 
+          Controls.Out:Trigger() 
+          Controls.OutPreview.Boolean = true
+          Timer.CallAfter(function() Controls.OutPreview.Boolean = false end, Properties["Pulse Output Time"].Value)
+        end
+      else  --Multiple Controls
+        Controls.InPreview[inevt].Boolean = true
+        Timer.CallAfter(function() Controls.InPreview[inevt].Boolean = false end, .2)
+        if Controls.Enable.Boolean then 
+          Controls.Out[inevt]:Trigger() 
+          Controls.OutPreview[inevt].Boolean = true
+          Timer.CallAfter(function() Controls.OutPreview[inevt].Boolean = false end, Properties["Pulse Output Time"].Value)
+        end
+      end --End Trigger Call Type 
+    end --End Type
+  end --End Function
+
+  --Check At Startup
+  eval("all")
+  Controls.Enable.EventHandler =function() eval("all") end
+
+  --EventHandlers
+  if Properties["Number of Inputs"].Value == 1 then 
+      Controls.In.EventHandler = function() eval("single") end
+  else
+    for idx, ctl in ipairs(Controls.In) do
+      ctl.EventHandler = function() eval(idx) end
+    end
+  end
+end

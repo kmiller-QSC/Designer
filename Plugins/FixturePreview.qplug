@@ -1,0 +1,168 @@
+PluginInfo =
+{
+  Name = "Fixture Color Preview",
+  Version = "1.0",
+  Id = "069a206a-4769-4690-868f-865fcfa3dede",
+  Author = "K. Rhodus // Q-SYS",
+  Description = "Fixture Color Preview",
+  ShowDebug = true,
+};
+
+function GetColor(props)
+  return { 255,255,255}
+end
+  
+function GetPrettyName(props)
+  return PluginInfo.Name
+end
+
+function GetProperties()
+  props = {}
+
+    table.insert(props,{
+    Name = "Color Mode",
+    Type = "enum",
+    Choices = {"RGB","RGBWA","Hex"},
+    Value = "RGB"
+  })
+  return props
+end
+
+
+function GetControls(props)
+  local ctrl = {};
+
+    if props["Color Mode"].Value == "RGB" then 
+        table.insert(ctrl,{
+        Name = "RGB",
+        ControlType = "Knob",
+        ControlUnit = "Integer",
+        Max = 255,
+        Min = 0,
+        UserPin = false,
+        PinStyle = "Input",
+        Count = 3
+        })
+
+    elseif props["Color Mode"].Value == "RGBWA" then
+        table.insert(ctrl,{
+        Name = "RGBWA",
+        ControlType = "Knob",
+        ControlUnit = "Integer",
+        Max = 255,
+        Min = 0,
+        UserPin = false,
+        PinStyle = "Input",
+        Count = 5
+        })
+    
+    elseif props["Color Mode"].Value == "Hex" then 
+        table.insert(ctrl,{
+        Name = "Hex",
+        ControlType = "Indicator",
+        IndicatorType = "Text",
+        UserPin = false, 
+        PinStyle = "Input",
+        Count = 1
+        })
+    end
+
+    table.insert(ctrl,{
+    Name = "Preview",
+    ControlType = "Indicator",
+    IndicatorType = "Led",
+    UserPin = true, 
+    PinStyle = "Output",
+    Count = 1
+    })
+
+  return ctrl;
+end
+
+function GetControlLayout(props)
+  layout = {};
+  graphics = {};
+
+    if props["Color Mode"].Value == "RGB" then 
+        layout["RGB 1"]={PrettyName="1-Red",Style="None"}
+        layout["RGB 2"]={PrettyName="2-Green",Style="None"}
+        layout["RGB 3"]={PrettyName="3-Blue",Style="None"}
+    elseif props["Color Mode"].Value == "RGBWA" then 
+        layout["RGBWA 1"]={PrettyName="1-Red",Style="None"}
+        layout["RGBWA 2"]={PrettyName="2-Green",Style="None"}
+        layout["RGBWA 3"]={PrettyName="3-Blue",Style="None"}
+        layout["RGBWA 4"]={PrettyName="4-White",Style="None"}
+        layout["RGBWA 5"]={PrettyName="5-Amber",Style="None"}
+    elseif props["Color Mode"].Value == "Hex" then 
+        layout["Hex"]={PrettyName=" Hex",Style="None"}
+    end
+  
+
+  layout["Preview"]={
+      PrettyName="LED~State",
+      Style="LED",
+      Color={0,0,0},
+      OffColor={0,0,0},
+      Position={0,0},
+      Size={100,100},
+
+  }
+
+  return layout,graphics;
+end
+
+if Controls then
+
+    -- Function to clamp a value between 0 and 255 and return the floored value
+    function TheClamps(val)
+      return math.floor(math.max(0, math.min(255,val)))
+    end 
+    -- Function to convert a number to a hexadecimal string, clamping the value between 0-255
+    function toHex(num)
+      -- Convert to hex, and clamp value between 0-255
+      return string.format("%02X", TheClamps(num)) 
+    end 
+
+    -- Function to convert RGBWA values to a hexadecimal color string, including White and Amber components
+    function RGBWA2HEX(r,g,b,w,a)
+      -- Add White and Amber values back to RGB and clamp each value between 0-255
+      local red = TheClamps(r + w + a)
+      local green = TheClamps(g + w) -- Amber is not added to Green
+      local blue = TheClamps(b + w)
+      
+      -- Concatenate the hexadecimal values of each color component to form the HEX color code
+      return '#'..toHex(red)..toHex(green)..toHex(blue)
+    end 
+
+    if Properties["Color Mode"].Value == "RGB" then 
+        for idx, ctl in ipairs(Controls.RGB) do 
+            ctl.EventHandler = function()
+                Controls.Preview.Color = string.format("#%02x%02x%02x", Controls.RGB[1].Value, Controls.RGB[2].Value, Controls.RGB[3].Value)
+            end
+            
+            Controls.Preview.Color = string.format("#%02x%02x%02x", Controls.RGB[1].Value, Controls.RGB[2].Value, Controls.RGB[3].Value)
+        end 
+    elseif Properties["Color Mode"].Value == "RGBWA" then
+        for idx, ctl in ipairs(Controls.RGBWA) do
+          ctl.EventHandler = function()
+            local r = Controls.RGBWA[1].Value
+            local g = Controls.RGBWA[2].Value
+            local b = Controls.RGBWA[3].Value
+            local w = Controls.RGBWA[4].Value
+            local a = Controls.RGBWA[5].Value
+
+            print(r,g,b,w,a)
+
+            Controls.Preview.Color = RGBWA2HEX(r,g,b,w,a)
+          end
+
+          Controls.Preview.Color = RGBWA2HEX(0,0,0,0,0)
+        end
+    elseif Properties["Color Mode"].Value == "Hex" then 
+        Controls.Hex.EventHandler = function()
+            Controls.Preview.Color = Controls.Hex.String
+        end
+        
+        Controls.Preview.Color = Controls.Hex.String
+    end
+end

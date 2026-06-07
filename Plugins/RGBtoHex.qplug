@@ -1,0 +1,77 @@
+PluginInfo =
+{
+  Name = "RGB to Hex",
+  Version = "1.0",
+  Id = "4f4b1619-e183-4a78-8fa9-4efa86b07e29",
+  Author = "K. Rhodus // Q-SYS",
+  Description = "RGB to Hex Converter",
+  ShowDebug = true,
+};
+
+function GetColor(props)
+  return { 255,255,255}
+end
+  
+function GetPrettyName(props)
+  return PluginInfo.Name
+end
+
+function GetProperties()
+  props = {}
+  return props
+end
+
+
+function GetControls(props)
+  local ctrl = {};
+	
+  table.insert(ctrl,{
+  Name = "RGB",
+  ControlType = "Knob",
+  ControlUnit = "Integer",
+  Max = 255,
+  Min = 0,
+  UserPin = false,
+  PinStyle = "Input",
+  Count = 3
+  })
+
+    table.insert(ctrl,{
+  Name = "Hex",
+  ControlType = "Indicator",
+  IndicatorType = "Text",
+  UserPin = false, 
+  PinStyle = "Output",
+  Count = 1
+  })
+
+  return ctrl;
+end
+
+function GetControlLayout(props)
+  layout = {};
+  graphics = {};
+
+  layout["Hex"]={PrettyName=" Hex",Style="None"}
+  layout["RGB 1"]={PrettyName="1-Red",Style="None"}
+  layout["RGB 2"]={PrettyName="2-Green",Style="None"}
+  layout["RGB 3"]={PrettyName="3-Blue",Style="None"}
+
+
+  return layout,graphics;
+end
+
+if Controls then
+  function UpdateColor ()
+    Color={}
+    for ix,pri in ipairs(Controls.RGB) do
+      table.insert(Color,pri.Value)
+    end
+    Controls.Hex.String= string.format("#%02x%02x%02x", table.unpack(Color))
+  end
+
+  for idx,ctl in ipairs(Controls.RGB) do
+    ctl.EventHandler = UpdateColor
+  end
+  UpdateColor()
+end

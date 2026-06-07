@@ -1,0 +1,1662 @@
+-- Shure MXA Plugin
+-- by Ho
+-- April 2024
+
+-- Information block for the plugin
+PluginInfo = {
+  Name = "Shure~Shure MXA920 NTI v2",
+  Version = "2.1.5",
+  BuildVersion = "2.1.5.0",
+  Id = "ad6824bd-42fd-4f49-ae32-c9338dc5d9e4-v2",
+  Author = "Ho + CJ",
+  Description = "Shure MXA920 Series Lobe or CA Draw"
+}
+
+-- Define the color of the plugin object in the design
+function GetColor(props)
+    local BrandColor = { 178, 255, 51 }
+  return BrandColor
+end
+
+-- The name that will initially display when dragged into a design
+function GetPrettyName(props)
+  return "Shure MXA920 NTI, version " .. PluginInfo.Version
+end
+
+-- Optional function used if plugin has multiple pages
+PageNames = { "Control" }  --List the pages within the plugin
+function GetPages(props)
+  local pages = {}
+  for ix,name in ipairs(PageNames) do
+    table.insert(pages, {name = PageNames[ix]})
+  end
+  return pages
+end
+
+-- Optional function to define model if plugin supports more than one model
+function GetModel(props)
+  local model = {}
+  if props.Model ~= nil and props.Model.Value ~= "" then
+    table.insert(model, { props.Model.Value } )
+  else
+    table.insert(model, { "Base Model" } )
+  end
+ return model
+end
+
+-- Define User configurable Properties of the plugin
+function GetProperties()
+  local props = {}
+  table.insert(props, {
+    Name = "Debug Print",
+    Type = "enum",
+    Choices = {"None", "Tx/Rx", "Tx", "Rx", "Function Calls", "All"},
+    Value = "None"
+  })
+  return props
+end
+
+-- Audio components placed inside the plugin (DSP graph)
+function GetComponents(props)
+  -- A basic mixer: 1 input × 8 outputs
+  return{{Name = "FanoutMixer", Type = "mixer", Properties = { ["n_inputs"] = 1, ["n_outputs"] = 8 }}}
+end
+
+-- Expose one audio input and n audio outputs on the plugin shell
+function GetPins(props)
+  local pins = {}
+  table.insert(pins, { Name = "In", Direction = "input", Domain = "audio" })
+  for j = 1, 8 do
+    table.insert(pins, { Name = string.format("Out %d", j), Direction = "output", Domain = "audio" })
+  end
+  return pins
+end
+
+-- Wire the shell pins to the internal components
+function GetWiring(props)
+  local wiring = {
+    --{"In", "FanoutMixer Input 1"}-- Input to the mixer's single input
+  }
+  -- Each mixer output to the corresponding plugin output
+  local outwiring={"In","FanoutMixer Input 1"}
+  table.insert(wiring, outwiring)
+  for j = 1, 8 do
+    --table.insert(wiring, { string.format("FanoutMixer Output %d", j), string.format("Out %d", j) })
+    table.insert(wiring, {string.format("FanoutMixer Output %i", j), string.format("Out %i", j)})
+  end
+  --table.insert(wiring, outwiring)
+  return wiring
+end
+
+-- Optional function to update available properties when properties are altered by the user
+function RectifyProperties(props)
+  if props.plugin_show_debug.Value == false then
+    props["Debug Print"].IsHidden = true
+  end
+  return props
+end
+
+-- Defines the Controls used within the plugin
+function GetControls(props)
+  local ctrls = {}
+  for j = 1, 8 do
+    table.insert(ctrls, { Name = "OutLevel"..j, ControlType = "Knob", ControlUnit = "dB", Min = -100, Max = 12, Default = 0 })
+    table.insert(ctrls, { Name = "OutMute"..j, ControlType = "Button", ButtonType = "Toggle", Default = 0 })
+  end
+  -- Optional master
+  table.insert(ctrls, { Name = "MasterLevel", ControlType = "Knob", ControlUnit = "dB", Min = -100, Max = 12, Default = 0 })
+  table.insert(ctrls, { Name = "MasterMute", ControlType = "Button", ButtonType = "Toggle", Default = 0 })
+  table.insert(ctrls, {
+    Name = "Image",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "DocSize",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 100,
+    Max = 3200,
+    DefaultValue = 3048,
+    PinStyle = "Input",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "IP",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "Mute",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = "Mute"
+  })
+  table.insert(ctrls, {
+    Name = "LEDMute",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = "Mute"
+  })
+  table.insert(ctrls, {
+    Name = "Preset",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 6,
+    UserPin = true,
+  })
+  table.insert(ctrls, {
+    Name = "AutoCoverage",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = "CA OFF"
+  })
+  table.insert(ctrls, {
+    Name = "ActiveMicLed",
+    ControlType = "Indicator",
+    IndicatorType = "Led",
+    PinStyle = "Output",
+    Count = 8,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "Scale",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 1,
+    Max = 5,
+    DefaultValue = 2.5,
+    PinStyle = "Input",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "Angle",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = -360,
+    Max = 360,
+    DefaultValue = 0,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "XY_Axis",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = "OFF"
+  })
+  table.insert(ctrls, {
+    Name = "Lobe_Opacity",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 0,
+    Max = 1,
+    DefaultValue = 0.15,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "Lobe_FillColor",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "Lobe_StrokeWidth",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 5,
+    Max = 50,
+    DefaultValue = 20,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "CA_Opacity",
+    ControlType = "Knob",
+    ControlUnit = "Float",
+    Min = 0,
+    Max = 1,
+    DefaultValue = 0.15,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "CA_StrokeWidth",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 5,
+    Max = 50,
+    DefaultValue = 20,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "CA_De_StrokeWidth",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 5,
+    Max = 50,
+    DefaultValue = 20,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "CA_FillColor",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "ActiveColor",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LEDLightColor",
+    ControlType = "Text",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LEDBrightness",
+    ControlType = "Knob",
+    ControlUnit = "Integer",
+    Min = 0,
+    Max = 5,
+    DefaultValue = 20,
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true
+  })
+  table.insert(ctrls, {
+    Name = "LEDBrightnessMute",
+    ControlType = "Button",
+    ButtonType = "Toggle",
+    PinStyle = "Both",
+    Count = 1,
+    UserPin = true,
+    DefaultValue = "Mute"
+  })
+  return ctrls
+end
+
+--Layout of controls and graphics for the plugin UI to display
+function GetControlLayout(props)
+  local layout = {}
+  local graphics = {}
+  local CurrentPage = PageNames[props["page_index"].Value]
+  local n = 8
+  local x0, y0 = 50, 650
+  local x, y = x0, y0
+  local colW, rowH = 50, 42
+  local Colors = {
+    Black     = {0,0,0}, --Black
+    White     = {255,255,255}, --White
+    Green     = {178,255,51}, --Shure Green
+    Gray      = {105,105,105}, --Light Gray
+    OffGray   = {124,124,124},
+    Blue      = {100,100,255},
+    LightBlue = {240,248,255}, --Normal Background Color
+    red       = {125,25,25}, --Off Red
+    Red       = {225,0,0} --on Red
+  }
+  --local ContPins = "Unit Information~"
+  if CurrentPage == "Control" then
+    table.insert(graphics,{
+      Type = "GroupBox",
+      Fill = Colors.LightBlue,
+      CornerRadius = 8,
+      StrokeColor = Colors.Black,
+      StrokeWidth = 1,
+      Position = {10,10},
+      Size = {890,590}
+    })
+    table.insert(graphics,{
+      Type = "GroupBox",
+      Fill = Colors.LightBlue,
+      CornerRadius = 8,
+      StrokeColor = Colors.Black,
+      StrokeWidth = 1,
+      Position = {10,600},
+      Size = {890,300}
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "IP Adress:",
+      Position = {25,25},
+      Color = Colors.Black,
+      Size = {130,20},
+      FontSize = 12,
+      HTextAlign = "Right"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Global Mute",
+      Position = {300,25},
+      Color = Colors.Black,
+      Size = {80,20},
+      FontSize = 12,
+      HTextAlign = "Right"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "LED Mute",
+      Position = {440,25},
+      Color = Colors.Black,
+      Size = {80,20},
+      FontSize = 12,
+      HTextAlign = "Right"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Presets",
+      Position = {580,25},
+      Color = Colors.Black,
+      Size = {80,20},
+      FontSize = 12,
+      HTextAlign = "Right"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "MXA Lobe or CA",
+      Position = {25,65},
+      Color = Colors.Black,
+      Size = {130,15},
+      FontSize = 12,
+      HTextAlign = "Right"
+    })
+    table.insert(graphics,{
+      Type = "GroupBox",
+      Text = "Option",
+      Fill = Colors.White,
+      CornerRadius = 8,
+      StrokeColor = Colors.Black,
+      StrokeWidth = 1,
+      Position = {535,65},
+      Size = {350,515},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Scale",
+      Position = {555,90},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Rotate Angle",
+      Position = {555,120},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "XY_Axis ON/OFF",
+      Position = {555,165},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "AutoCoverage Mode",
+      Position = {555,195},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Active Zones",
+      Position = {555,225},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "--Only MXA920",
+      Position = {750,195},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Lobe Opacity",
+      Position = {555,265},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Lobe FillColor",
+      Position = {555,295},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Lobe Stroke Width",
+      Position = {555,325},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "CA Opacity",
+      Position = {555,355},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "CA FillColor",
+      Position = {555,385},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "CA Dynamic\nStrokeWidth",
+      Position = {555,415},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "CA Dedicated\nStroke Width",
+      Position = {555,450},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "Active Color",
+      Position = {555,480},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "LED Light Color",
+      Position = {555,510},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "--Not control color\n  Appearance only",
+      Position = {780,510},
+      Color = Colors.Black,
+      Size = {100,30},
+      FontSize = 8,
+      HTextAlign = "Left"
+    })
+    table.insert(graphics,{
+      Type = "Text",
+      Text = "LED Brightness",
+      Position = {555,540},
+      Color = Colors.Black,
+      Size = {130,30},
+      FontSize = 12,
+      HTextAlign = "Left"
+    })
+
+    --Add Mixer Controls on Layout
+    for j = 1, n do
+        local col = ((j-1) % 8)
+        local row = math.floor((j-1) / 8)
+        x = x0 + col * colW
+        y = y0 + row * rowH
+        table.insert(graphics, { Type = "Label", Text = string.format("Out %d", j), FontSize = 14, Position = {x, y}, Size = {80, 25} })
+        layout["OutLevel"..j]={PrettyName="Gain "..j,Style="Fader",Position = {x+25, y+20}, Size = {30, 100}}
+        layout["OutMute"..j] = { PrettyName = "Mute "..j, Style = "Button", FontSize = 12, Color = Colors.Red, OffColor = Colors.red, UnlinkOffColor = true, StrokeWidth = 1, Margin = 5, Position = {x+15, y+125}, Size = {48, 24},}
+    end
+
+    -- Master controls at the bottom
+    y = y0 + rowH * (math.ceil(n/2) + (perOutput and 1 or 0))
+    table.insert(graphics, { Type = "Label", Text = "Master", FontSize = 14, Position = {x+100, 650}, Size = {80, 25} })
+    layout["MasterLevel"]={PrettyName="Master Gain",Style="Fader",Position = {x+125, 670}, Size = {30, 100}}
+    layout["MasterMute"] = { PrettyName = "Master Mute", Style = "Button", FontSize = 12, Color = Colors.Red, OffColor = Colors.red, UnlinkOffColor = true, StrokeWidth = 1, Margin = 5, Position = {x+115, 775}, Size = {48, 24},}
+
+  
+    -- System
+    layout["IP"] = {
+      Style = "Indicator",
+      Position = {155,25},
+      Size = {130,20},
+      Color = Colors.White,
+      FontSize = 12,
+      HTextAlign = "Center",
+      IsReadOnly = false
+    }
+    layout["Image"] = {
+      PrettyName = "Image",
+      Style = "Button",
+      Color = Colors.Black,
+      OffColor = Colors.Black,
+      UnlinkOffColor = true,
+      StrokeWidth = 1,
+      Margin = 2,
+      Position = {25,80},
+      Size = {500,500}
+    }
+    layout["Mute"] = {
+      PrettyName = "GlobalMute",
+      Style = "Button",
+      FontSize = 12,
+      Color = Colors.Red,
+      OffColor = Colors.red,
+      UnlinkOffColor = true,
+      StrokeWidth = 1,
+      Margin = 5,
+      Position = {380,20},
+      Size = {55,30},
+    }
+    layout["LEDMute"] = {
+      PrettyName = "LEDMute",
+      Style = "Button",
+      FontSize = 12,
+      Color = Colors.Red,
+      OffColor = Colors.red,
+      UnlinkOffColor = true,
+      StrokeWidth = 1,
+      Margin = 5,
+      Position = {520,20},
+      Size = {55,30},
+    }
+    local loopv = 660
+    for i=1,6 do
+      layout["Preset "..i] = {
+        PrettyName = "Preset "..i,
+        Style = "Button",
+        FontSize = 12,
+        Color = Colors.Blue,
+        OffColor = Colors.LightBlue,
+        UnlinkOffColor = true,
+        StrokeWidth = 1,
+        Margin = 5,
+        Position = {loopv,20},
+        Size = {40,30},
+      }
+      loopv = loopv+35
+    end
+    layout["Scale"] = {
+      PrettyName = "Scale",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,90},
+      Size = {55,30}
+    }
+    layout["Angle"] = {
+      PrettyName = "Angle",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,120},
+      Size = {55,30}
+    }
+    layout["XY_Axis"] = {
+      PrettyName = "XY_Axis",
+      Style = "Button",
+      FontSize = 12,
+      Color = Colors.White,
+      OffColor = Colors.OffGray,
+      UnlinkOffColor = true,
+      StrokeWidth = 1,
+      Margin = 5,
+      Position = {690,165},
+      Size = {55,30}
+    }  
+      layout["AutoCoverage"] = {
+      PrettyName = "AutoCoverage",
+      Style = "Button",
+      FontSize = 12,
+      Color = Colors.White,
+      OffColor = Colors.OffGray,
+      UnlinkOffColor = true,
+      StrokeWidth = 1,
+      Margin = 5,
+      Position = {690,195},
+      Size = {55,30},
+    }
+    ledx =690
+    for i=1,8 do
+      layout["ActiveMicLed "..i] = {
+      PrettyName = "ActiveMicLed"..i,
+      Style = "Button",
+      Color = Colors.Green,
+      OffColor = Colors.red,
+      UnlinkOffColor = true,
+      StrokeWidth = 1,
+      Position = {ledx,229},
+      Size = {22,22},
+      CornerRadius=15,
+      }
+      ledx=ledx+22
+    end
+    layout["Lobe_Opacity"] = {
+      PrettyName = "Lobe Opacity",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,265},
+      Size = {55,30}
+    }
+    layout["Lobe_FillColor"] = {
+      PrettyName = "Lobe FillColor",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,295},
+      Size = {86,30}
+    }
+    layout["Lobe_StrokeWidth"] = {
+      PrettyName = "Lobe StrokeWidth",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,325},
+      Size = {55,30}
+    }
+    layout["CA_Opacity"] = {
+      PrettyName = "CA Opacity",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,355},
+      Size = {55,30}
+    }
+    layout["CA_FillColor"] = {
+      PrettyName = "CA FillColor",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,385},
+      Size = {86,30}
+    }
+    layout["CA_StrokeWidth"] = {
+      PrettyName = "CA Dynamic StrokeWidth",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,415},
+      Size = {55,30}
+    }
+    layout["CA_De_StrokeWidth"] = {
+      PrettyName = "CA Dedicated StrokeWidth",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,450},
+      Size = {55,30}
+    }
+    layout["ActiveColor"] = {
+      PrettyName = "Active Color",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,480},
+      Size = {86,30}
+    }
+    layout["LEDLightColor"] = {
+      PrettyName = "LED Light Color",
+      Style = "ComboBox",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,510},
+      Size = {86,30}
+    }
+    layout["LEDBrightness"] = {
+      PrettyName = "LED Brightness 0-5",
+      Style = "Text",
+      FontSize = 12,
+      HTextAlign = "Center",
+      Margin = 5,
+      Position = {690,540},
+      Size = {55,30}
+    }
+    layout["LEDBrightnessMute"] = {
+      PrettyName = "LED Brightness Mute",
+      Style = "Button",
+      FontSize = 12,
+      Color = Colors.Red,
+      OffColor = Colors.red,
+      UnlinkOffColor = true,
+      StrokeWidth = 1,
+      Margin = 5,
+      Position = {750,540},
+      Size = {55,30},
+    }
+  end
+  return layout, graphics
+end
+
+--Start event based logic
+if Controls then
+  --Debug Function
+  ---------------------------------------------------------
+  function DebugFormat(string) -- Format strings containing non-printable characters so we can see what they are
+    local visual = ""
+    for i=1,#string do
+      local byte = string:sub(i,i)
+      if string.byte(byte) >= 32 and string.byte(byte) <= 126 then
+        visual = visual..byte
+      else
+        visual = visual..string.format("[%02xh]",string.byte(byte))
+      end
+    end
+    return visual
+  end
+  
+  DebugTx = false
+  DebugRx = false
+  DebugFunction = false
+  DebugPrint = Properties["Debug Print"].Value
+  
+  -- A function to determine common print statement scenarios for troubleshooting
+  function SetupDebugPrint()
+    if DebugPrint=="Tx/Rx" then
+      DebugTx,DebugRx=true,true
+    elseif DebugPrint=="Tx" then
+      DebugTx=true
+    elseif DebugPrint=="Rx" then
+      DebugRx=true
+    elseif DebugPrint=="Function Calls" then
+      DebugFunction=true
+    elseif DebugPrint=="All" then
+      DebugTx,DebugRx,DebugFunction=true,true,true
+    end
+  end
+  
+  SetupDebugPrint()
+  
+  ---------------------------------------------------------
+  rapidjson = require 'rapidjson'
+  EzSVG = require 'EzSVG'
+  
+
+  local rx = Controls.Rx
+  local docSize = Controls.DocSize.Value --must be larger than 3048
+  local center = docSize ~= nil and docSize/2 or nil
+  
+  local fillColor = "lightblue"
+  local fillOpacity = 0.7
+  local strokeColor = fillColor
+  local strokeWidth = 1
+  local cx_fillColor = "red" --X axis color
+  local cy_fillColor = "green" --Y axis color
+  local c_fillOpacity = 0.8
+  local c_strokeColor = cx_fillColor
+  local c_strokeWidth = docSize*0.001
+  
+  local L_fillColor = "#325a75"
+  local L_fillOpacity = 0.8
+  local L_strokeColor = L_fillColor
+  local L_strokeWidth = docSize*0.01
+  
+  local L_af_fillColor = "#9bd6ed"
+  local L_af_fillOpacity = 0.15
+  local L_af_strokeColor = L_af_fillColor
+  local L_af_strokeWidth = docSize*0.01
+  
+  local CA_fillColor = "gray"
+  local CA_fillOpacity = 0.8
+  local CA_strokeColor = "#80bbd1"
+  local CA_strokeWidth = docSize*0.01
+  local CA_De_strokeColor = "#CC9242"--"#f5d9b1"
+  local CA_De_strokeWidth = docSize*0.015
+  
+  local Active_Color = "lime"--black"--
+  
+  local lobe_pos = {}
+  local lobe_af_pos = {}
+  for i = 1, 8 do
+    lobe_pos[i] = {X = nil, Y = nil, Z = nil}
+    lobe_af_pos[i] = {X = nil, Y = nil, Z = nil}
+  end
+  local lobe_dynamic = {}
+  local lobe_dedicated = {}
+  
+  for i = 1, 8 do
+    lobe_dynamic[i] = {Xmin = nil, Ymax = nil, Xmax = nil, Ymin = nil}
+    lobe_dedicated[i] = {Xmin = nil, Ymax = nil, Xmax = nil, Ymin = nil}
+  end
+  
+  local initialized = false
+  local init_ca = false
+  local auto_ca = Controls["AutoCoverage"]
+  local activemicled = Controls["ActiveMicLed"]
+  local globalmute = Controls["Mute"]
+  local ledmute = Controls["LEDMute"]
+  local ledbright = Controls["LEDBrightness"]
+  local ledbrightmute = Controls["LEDBrightnessMute"]
+  local autocoverage = false
+  local nscale = 1--default
+  local scale = Controls["Scale"]
+  local nangle = 0
+  local angle = Controls["Angle"]
+  local xy_axis = Controls["XY_Axis"]
+  local axis = true
+  local background = nil
+  
+  ---------------------------------------------------------------------------------
+  ip = Controls["IP"]
+  port = 2202 --Controls["Port"]
+  shure = { Host = "" } --{ Host = "", Port = "" }
+  -- Build TCP Client---------------------------------------------------------------
+  sock = TcpSocket.New()
+  sock.ReadTimeout = 0
+  sock.WriteTimeout = 5
+  sock.ReconnectTimeout = 5
+  
+  --Sock EventHandler
+  sock.EventHandler = function(sock, evt, err)
+    if evt == TcpSocket.Events.Connected then
+      if(DebugFunction)then print("TCP socket is Connected") end
+      Timer.CallAfter(function()
+        sock:Write("< GET 0 ALL >") --MXA910
+        sock:Write("< GET ALL >") --MXA920
+      end , 1)
+      Timer.CallAfter(function() auto_ca.EventHandler()
+      end , 1.5)
+      Timer.CallAfter(function() angle.EventHandler()
+      end , 2.0)
+    elseif evt == TcpSocket.Events.Data then
+      local buffer = ""
+      buffer = buffer .. sock:Read(sock.BufferLength)  -- Buffer length
+      --print("#buffer:"..#buffer, buffer)
+      --rx.String = buffer
+      if string.find(buffer, "< REP PRESET") then
+        print("Preset = ", buffer)
+        for key, ctrl in pairs(Controls.Preset) do
+          ctrl.Boolean = false
+        end
+        local p = string.match(buffer, "%d+")
+        print("Preset is, ",tonumber(p))
+        for key, ctrl in pairs(Controls.Preset) do
+          ctrl.Boolean = (key==tonumber(p))
+        end
+      end
+      GetAutoCoverage(buffer)
+      if #buffer <= 4096 then
+        if autocoverage == false then
+          GetLobePos(buffer, autocoverage)
+        else
+          GetLobePosCA(buffer, autocoverage)
+        end
+        buffer = ""
+      end
+    elseif evt == TcpSocket.Events.Closed then
+      if(DebugFunction)then print("TCP socket was closed by the remote") end
+    elseif evt == TcpSocket.Events.Error then
+      if(DebugFunction)then print("TCP socket error") end
+      DrawCampus(autocoverage, axis, nscale, nangle, nil, "Clear")
+    elseif evt == TcpSocket.Events.Timeout then
+      if(DebugFunction)then print("TCP socket timeout") end
+    end
+  end
+  
+  --Connect Function--------------------------------------------------------------
+  Connect = function()
+    ip = Controls["IP"]; --port = Contorls["Port"]
+    if (ip.String ~= "") then --(ip.String ~= "" and port.String ~= "")
+      shure.Host = ip.String --shure.port = port.Stirng
+      if(DebugFunction)then print("Connet to Shure Device IP : "..ip.String) end
+      sock:Connect(shure.Host, 2202 )--(shure.Host, shure.Port )
+      if(DebugFunction)then print("TCP socket is Connecting") end
+    else
+      if(DebugFunction)then print("IP Address Not Set") end
+      ip.String = "Enter MXA's IP"
+    end
+  end
+  ip.EventHandler = Connect
+  Connect()
+
+
+--print("Mixer: ",Controls["FanoutMixer"].Type, Controls["FanoutMixer"].Name)
+  ------------------------------------------------------------------------------
+  function DrawSVG(svgData) --Draw SVG
+    Controls.Image.Legend = rapidjson.encode({
+      DrawChrome = false, -- Removes the button face and edges
+      IconData = Crypto.Base64Encode(svgData),
+    })
+  end
+  --Draw Lobe Coverage-----------------------------------------------------------
+  function DrawLobe(background, active)
+    for i = 1, 8 do
+      local pos = lobe_pos[i]
+      if pos and pos.X and pos.Y and pos.Z then
+        local lobeGroup = EzSVG.Group()
+        -- draw lobe center
+        local cx = (pos.X - center ) * nscale + center
+        local cy = -nscale * (pos.Y  - center) + center
+        local lobe_scale = nscale * 0.1
+        local r = pos.Z * 2 * lobe_scale
+        local lobe = EzSVG.Circle(cx, cy, r)
+          :setStyle("fill", L_fillColor)
+          :setStyle("fill-opacity", L_fillOpacity)
+          :setStyle("stroke", L_strokeColor)
+          :setStyle("stroke-width", L_strokeWidth)
+        lobeGroup:add(lobe)
+        -- add text
+        local lobe_txt_size = docSize*0.01 * nscale
+        local lobe_txt = EzSVG.Text(i, cx - lobe_txt_size/3, cy + lobe_txt_size/3)
+          :setStyle("font-size", lobe_txt_size)
+          :setStyle("fill", "white")
+          :setStyle("text-anchor", "start")
+        lobeGroup:add(lobe_txt)
+        -- draw lobe
+        local lobe_line = EzSVG.Line(center , center, cx - docSize*0.01, cy + docSize*0.01)
+          :setStyle("fill", L_fillColor)
+        lobeGroup:add(lobe_line)
+  
+        background:add(lobeGroup)
+      end
+    end
+  end
+  
+  function DrawLobe_AF(background, active)
+    for i = 1, 8 do
+      local posAF = lobe_af_pos[i]
+      if posAF and posAF.X and posAF.Y and posAF.Z then
+        local lobeAF_Group = EzSVG.Group()
+        -- draw lobe center
+        local cx = (posAF.X - center ) * nscale + center
+        local cy = -nscale * (posAF.Y  - center) + center
+        local dx = posAF.X - center
+        local dy = posAF.Y - center
+        -- Calculate angle with respect to the center (center, center) in radians
+        local c_radian = math.atan2(dy, dx)
+        local c_degree = math.deg(c_radian)
+        local lobe_scale = nscale * 0.8
+        local r = posAF.Z * 2 * lobe_scale
+        local rx = r * 0.7
+        local ry = r
+        -- Calculate rotation angle with -90 degree offset
+        local rotation_angle = c_degree - 90
+  
+        local lobeAF = EzSVG.Ellipse(cx, cy, rx, ry)
+          :setStyle("fill", L_af_fillColor)
+          :setStyle("fill-opacity", L_af_fillOpacity)
+          :setStyle("stroke", L_af_strokeColor)
+          :setStyle("stroke-width", L_af_strokeWidth)
+          :rotate(-rotation_angle, cx, cy)
+        lobeAF_Group:add(lobeAF)
+        -- draw lobe center
+        local L_af_line_strokeWidth = c_strokeWidth * nscale
+        local lx = cx + (center - cx) * 0.08
+        local ly = cy + (center - cy) * 0.08
+        local lobeAF_line = EzSVG.Line(center, center, lx, ly)
+          :setStyle("stroke-opacity", 0.4)
+          :setStyle("stroke", L_fillColor)
+          :setStyle("stroke-width", L_af_line_strokeWidth)
+        lobeAF_Group:add(lobeAF_line)
+        -- active
+        if i == tonumber(active) then
+          local active_lobeAF = EzSVG.Ellipse(cx, cy, rx, ry)
+          active_lobeAF:setStyle("stroke", L_strokeColor):setStyle("stroke-width", L_strokeWidth * .5)
+          :setStyle("fill", "none")
+          :setStyle("opacity", 0.8)
+          :rotate(-rotation_angle, cx, cy)
+          lobeAF_Group:add(active_lobeAF)
+        end
+  
+        background:add(lobeAF_Group)
+      end
+    end
+  end
+  
+  --Draw CA Coverage----------------------------------------------------------------------------------
+  function DrawDynamicCA(background, active)
+    for i = 1, 8 do
+      local pos = lobe_dynamic[i]
+      if pos and pos.Xmin and pos.Ymax and pos.Xmax and pos.Ymin then
+        local Dy_CA_Group = EzSVG.Group()
+        -- draw ca
+        local xmin = (pos.Xmin - center) * nscale + center
+        local ymax = (pos.Ymax - center) * -nscale + center
+        local xwidth = (pos.Xmax - pos.Xmin) * nscale
+        local ywidth = (pos.Ymax - pos.Ymin) * nscale
+        local rpoint = xwidth / 50
+        local dynamic_ca = EzSVG.Rect(xmin, ymax, xwidth, ywidth, rpoint, rpoint)
+          :setStyle("fill", CA_fillColor)
+          :setStyle("fill-opacity", CA_fillOpacity)
+          :setStyle("stroke-width", CA_strokeWidth)
+          :setStyle("stroke", CA_strokeColor)
+          :setStyle("stroke-width", CA_strokeWidth)
+        Dy_CA_Group:add(dynamic_ca)
+        -- active
+        if i == tonumber(active) then
+          local scale = 1.02
+          local new_xmin = xmin - (xwidth * ((scale-1)/2) )  -- Adjusting for 1.01 times scaling
+          local new_ymin = ymax - (ywidth * ((scale-1)/2) )  -- Adjusting for 1.01 times scaling
+          local new_xwidth = xwidth * scale
+          local new_ywidth = ywidth * scale
+          -- Create the active_ca rectangle with the adjusted position and size
+          local active_ca = EzSVG.Rect(new_xmin, new_ymin, new_xwidth, new_ywidth, rpoint, rpoint)
+          active_ca:setStyle("stroke", Active_Color):setStyle("stroke-width", CA_strokeWidth * .5)
+          :setStyle("fill", "none")
+          :setStyle("opacity", 1)
+          Dy_CA_Group:add(active_ca)
+        end
+        -- Dash Line
+        local cx = xwidth / 2
+        local cy = ywidth / 2
+        local dash_line_strokeWidth = 2.5 * nscale
+        local dynamic_ca_dash_line = EzSVG.Line(center, center, cx+xmin, cy+ymax)
+          :setStyle("opacity", 0.6)
+          :setStyle("stroke", "black")
+          :setStyle("stroke-width", dash_line_strokeWidth)
+          :setStyle("stroke-dasharray", "10*nscale, 10*nscale")
+        Dy_CA_Group:add(dynamic_ca_dash_line)
+        -- add circle
+        local dy_scale = nscale * 25
+        local r = dy_scale
+        local dynamic_ca_circle = EzSVG.Circle(cx+xmin, cy+ymax, r )
+          :setStyle("fill", "white")
+          :setStyle("opacity", 1)
+          :setStyle("stroke", "black")
+          :setStyle("stroke-width", 3)
+        Dy_CA_Group:add(dynamic_ca_circle)
+        -- add text
+        local dynamic_ca_txt_size = docSize*0.01 * nscale
+        local dynamic_ca_txt = EzSVG.Text(i, cx+xmin-dynamic_ca_txt_size/3, cy+ymax+dynamic_ca_txt_size/3 )
+          :setStyle("font-size", dynamic_ca_txt_size)
+          :setStyle("fill", "black")
+          :setStyle("text-anchor", "start")
+        Dy_CA_Group:add(dynamic_ca_txt)
+        Dy_CA_Group:rotate(-nangle, center, center)
+  
+        background:add(Dy_CA_Group)
+      end
+    end
+  end
+  
+  function DrawDedicatedCA(background, active)
+    for i = 1, 8 do
+      local pos = lobe_dedicated[i]
+      if  pos and pos.Xmin and pos.Ymax and pos.Xmax and pos.Ymin then
+        local De_CA_Group = EzSVG.Group()
+        -- draw ca
+        local xmin = (pos.Xmin - center) * nscale + center
+        local ymax = (pos.Ymax - center) * -nscale + center
+        local xwidth = (pos.Xmax - pos.Xmin) * nscale
+        local ywidth = (pos.Ymax - pos.Ymin) * nscale
+        local rpoint = xwidth / 50
+        local dedicated_ca = EzSVG.Rect(xmin, ymax, xwidth, ywidth, rpoint, rpoint)
+          :setStyle("fill", CA_fillColor)
+          :setStyle("fill-opacity", CA_fillOpacity)
+          :setStyle("stroke", CA_De_strokeColor)
+          :setStyle("stroke-width", CA_De_strokeWidth)
+        De_CA_Group:add(dedicated_ca)
+        -- active
+        if i == tonumber(active) then
+          local scale = 1.02
+          local new_xmin = xmin - (xwidth * ((scale-1)/2) )  -- Adjusting for 1.01 times scaling
+          local new_ymin = ymax - (ywidth * ((scale-1)/2) )  -- Adjusting for 1.01 times scaling
+          local new_xwidth = xwidth * scale
+          local new_ywidth = ywidth * scale
+          -- Create the active_ca rectangle with the adjusted position and size
+          local active_ca = EzSVG.Rect(new_xmin, new_ymin, new_xwidth, new_ywidth, rpoint, rpoint)
+          active_ca:setStyle("stroke", Active_Color):setStyle("stroke-width", CA_De_strokeWidth * .5)
+          :setStyle("fill", "none")
+          :setStyle("opacity", 1)
+          De_CA_Group:add(active_ca)
+        end
+        -- Dash Line
+        local cx = xwidth / 2
+        local cy = ywidth / 2
+        local dash_line_strokeWidth = 2.5 * nscale
+        local dedicated_ca_dash_line = EzSVG.Line(center, center, cx+xmin, cy+ymax)
+          :setStyle("opacity", 0.6)
+          :setStyle("stroke", "black")
+          :setStyle("stroke-width", dash_line_strokeWidth)
+          :setStyle("stroke-dasharray", "10*nscale, 10*nscale")
+        De_CA_Group:add(dedicated_ca_dash_line)
+        -- add circle
+        local dy_scale = nscale * 25
+        local r = dy_scale
+        local dedicated_ca_circle = EzSVG.Circle(cx+xmin, cy+ymax, r )
+          :setStyle("fill", "white")
+          :setStyle("opacity", 1)
+          :setStyle("stroke", "black")
+          :setStyle("stroke-width", 3)
+        De_CA_Group:add(dedicated_ca_circle)
+        -- add text
+        local dedicated_ca_txt_size = docSize*0.01 * nscale
+        local dedicated_ca_txt = EzSVG.Text(i, cx+xmin-dedicated_ca_txt_size/3, cy+ymax+dedicated_ca_txt_size/3 )
+          :setStyle("font-size", dedicated_ca_txt_size)
+          :setStyle("fill", "black")
+          :setStyle("text-anchor", "start")
+        De_CA_Group:add(dedicated_ca_txt)
+        De_CA_Group:rotate(-nangle, center, center)
+  
+        background:add(De_CA_Group)
+      end
+    end
+  end
+  
+  --Draw ALL SVG----------------------------------------------------------------------------------------
+  function DrawCampus(autocoverage, axis, nscale, nangle, active, mode)
+    nscale = scale.Value
+    nangle = angle.Value
+    local doc = EzSVG.Document(docSize, docSize)
+    local background = EzSVG.Group()
+    --Draw axis
+    if axis == true then DrawAxis(background) end
+    --Clear Lobe or CA
+    if mode == nil then
+      --Draw Lobe or CA
+      if autocoverage == false then
+        DrawLobe_AF(background, active)
+        DrawLobe(background, active)
+      else
+        DrawDynamicCA(background, active)
+        DrawDedicatedCA(background, active)
+      end
+    end
+    -- add a MXA to the document
+    local mxa_w = (center/center)*60 * nscale
+    local mxa_h = (center/center)*60 * nscale
+    local mxa_x = center-(mxa_w/2)
+    local mxa_y = center-(mxa_h/2)
+    local MXA = EzSVG.Rect(mxa_x, mxa_y , mxa_w, mxa_h, 5, 5)
+    local mxa_style_width = docSize*0.03 * nscale
+    MXA:setStyle("fill", "white")
+       :setStyle("fill-opacity", 1)
+       :setStyle("stroke-width", mxa_style_width)
+    background:add(MXA)
+    -- add a small green rectangle to the top-right corner of the square
+    local ledlight_w = (center/center)*16 * nscale
+    local ledlight_h = (center/center)*4 * nscale
+    local ledlight_x = (center-mxa_w/2)+mxa_w*4/6
+    local ledlight_y = (center-mxa_h/2)+mxa_h*1/8
+    local ledlight = EzSVG.Rect(ledlight_x, ledlight_y, ledlight_w, ledlight_h)
+    ledlight:setStyle("fill", ledlightColor)--"#3cfc22"
+    background:add(ledlight)
+    local logofont_size = docSize*0.005 * nscale
+    local logoLabel = EzSVG.Text("SHURE", ledlight_x, ledlight_y)
+            :setStyle("font-size", logofont_size)
+            :setStyle("fill", "black")
+    background:add(logoLabel)
+    --angle
+    background:rotate(nangle, center, center)
+    doc:add(background)
+    -- add 8 lobes to the document
+    svgData = doc:toString()
+    DrawSVG(svgData)
+  end
+  
+  --Draw Axis----------------------------------------------------------------------------------------
+  function DrawAxis(background)
+    -- draw the X-axis (red) and label
+    local xLine = EzSVG.Line(center, docSize*0.05, center, docSize-(docSize*0.05) )
+    xLine:setStyle("stroke", cx_fillColor)
+        :setStyle("stroke-width", c_strokeWidth)
+        :setStyle("fill-opacity", c_fillOpacity)
+    background:add(xLine)
+    local xLabel = EzSVG.Text("X", docSize-(docSize*0.05), center-(docSize*0.01) )
+        :setStyle("font-size", docSize*0.03)
+        :setStyle("fill", cy_fillColor)
+    background:add(xLabel)
+    local xlabel_half_point = center+center/2 --1524+712 = 2236
+    local cm = xlabel_half_point-center -- 2236/4
+    local meter = math.floor( cm / nscale+0.5) /100
+    local xhalfLabel = EzSVG.Text( meter.."m", xlabel_half_point, center )
+        :setStyle("font-size", docSize*0.03)
+        :setStyle("fill", cy_fillColor)
+    local m_xlabel_half_point = center-center/2
+    local m_cm = m_xlabel_half_point-center
+    local m_meter = math.floor( m_cm / nscale+0.5) /100
+    local m_xhalfLabel = EzSVG.Text( m_meter.."m", m_xlabel_half_point, center )
+        :setStyle("font-size", docSize*0.03)
+        :setStyle("fill", cy_fillColor)
+    background:add(xhalfLabel)
+    background:add(m_xhalfLabel)
+  
+    -- draw the Y-axis (green) and label
+    local yLine = EzSVG.Line(docSize*0.05, center, docSize-(docSize*0.05), center)
+    yLine:setStyle("stroke", cy_fillColor)
+        :setStyle("stroke-width", c_strokeWidth)
+        :setStyle("fill-opacity", c_fillOpacity)
+    background:add(yLine)
+    local yLabel = EzSVG.Text("Y", center+docSize*0.01, docSize-(docSize*0.03) )
+        :setStyle("font-size", docSize*0.03)
+        :setStyle("fill", cx_fillColor)
+    background:add(yLabel)
+    local m_ylabel_half_point = center+center/2
+    local m_cm = m_ylabel_half_point-center
+    local m_meter = math.floor( m_cm / nscale+0.5) /100
+    local m_yhalfLabel = EzSVG.Text("-" ..m_meter.."m", center, m_ylabel_half_point )
+        :setStyle("font-size", docSize*0.03)
+        :setStyle("fill", cx_fillColor)
+    local ylabel_half_point = center-center/2
+    local cm = ylabel_half_point-center
+    local meter = math.floor( cm / nscale+0.5) /100 * -1
+    local yhalfLabel = EzSVG.Text(meter.."m", center, ylabel_half_point )
+        :setStyle("font-size", docSize*0.03)
+        :setStyle("fill", cx_fillColor)
+    background:add(yhalfLabel)
+    background:add(m_yhalfLabel)
+  end
+  --Draw Lobe Helper func-------------------------------------------------------------------
+  function LobeInfo(lines, pattern, lobe_storage)
+    for _, line in ipairs(lines) do
+      local index, axis, value = line:match(pattern)
+      if index and axis and value then
+        local lobe_num = tonumber(index)
+        if not lobe_storage[lobe_num] then lobe_storage[lobe_num] = {} end
+        lobe_storage[lobe_num][axis] = tonumber(value)
+      end
+    end
+  end
+  --Draw Lobe from Get Response-------------------------------------------------------------------
+  function GetLobePos(str, autocoverage)
+    if type(str) == "string" and str ~= nil and str ~= "" then
+      local lines = {}
+      for line in str:gmatch("< REP.- >") do
+        table.insert(lines, line)
+      end
+  
+      local fix = "< REP (%d+) BEAM_(%a) (%d+) >"
+      local af = "< REP (%d+) BEAM_(%a)_AF (%d+) >"
+      local active_lobe = "< REP (%d%d?) AUTOMIX_GATE_OUT_EXT_SIG (%a+) >"
+      local active_lobes = {}
+  
+      for _, line in ipairs(lines) do
+        local index, sts = line:match(active_lobe)
+        if index and sts == "ON" then
+        table.insert(active_lobes, index)
+        end
+      end
+  
+      LobeInfo(lines, fix, lobe_pos)
+      LobeInfo(lines, af, lobe_af_pos)
+  
+      initialized = true -- initial flag off
+      --print("REP:".."lobe_pos:"..rapidjson.encode(lobe_pos) )
+      --print("REP:".."lobe_af_pos:"..rapidjson.encode(lobe_af_pos) )
+      DrawCampus(autocoverage, axis, nscale, nangle, active)
+      for a, active in ipairs(active_lobes) do
+        print("active_lobe_index: "..active)
+        for x, v in pairs(activemicled) do
+          v.Boolean = false
+        end
+        print("active mic: "..active==a, active, a)
+        activemicled[tonumber(active)].Boolean = true
+        DrawCampus(autocoverage, axis, nscale, nangle, active)
+      end
+      return lobe_num, lobe_pos, lobe_af_pos
+    end
+  end
+  
+  --Draw CA Helper func-------------------------------------------------------------------
+  function LobeInfoCA(lines, pattern, lobe_storage)
+    for _, line in ipairs(lines) do
+      --x_min--UpperLeft, y_max--UpperLeft, x_max--LowerRight, y_min--LowerRight
+      local index, Xmin, Ymax, Xmax, Ymin = line:match(pattern)
+      if index and Xmin and Ymax and Xmax and Ymin then
+        local lobe_num = tonumber(index)
+        if not lobe_storage[lobe_num] then lobe_storage[lobe_num] = {} end
+        lobe_storage[lobe_num].Xmin = tonumber(Xmin)
+        lobe_storage[lobe_num].Ymax = tonumber(Ymax)
+        lobe_storage[lobe_num].Xmax = tonumber(Xmax)
+        lobe_storage[lobe_num].Ymin = tonumber(Ymin)
+      end
+    end
+  end
+  function RemoveLobeInfo(lines, pattern, lobe_storage)
+    for _, line in ipairs(lines) do
+      local index = line:match(pattern)
+      if index then
+        local ca_num = tonumber(index)
+        if not lobe_storage[ca_num] then lobe_storage[ca_num] = {} end
+        lobe_storage[ca_num].Xmin = nil
+        lobe_storage[ca_num].Ymax = nil
+        lobe_storage[ca_num].Xmax = nil
+        lobe_storage[ca_num].Ymin = nil
+      end
+    end
+  end
+  --Draw CA from Get Response-------------------------------------------------------------------
+  function GetLobePosCA(str, autocoverage)
+    if type(str) == "string" and str ~= nil and str ~= "" then
+      local lines = {}
+      for line in str:gmatch("< REP.- >") do
+        table.insert(lines, line)
+      end
+  
+      local dynamic = "< REP (%d+) CA_DYNAMIC (%d+) (%d+) (%d+) (%d+) >"
+      local dedicated = "< REP (%d+) CA_DEDICATED (%d+) (%d+) (%d+) (%d+) >"
+      local remove_ca = "< REP (%d+) CA_MUTE OFF >"
+      local active_ca = "< REP (%d+) AUTOMIX_GATE_OUT_CA (%a+) >"
+      local active_cas = {}
+  
+      for _, line in ipairs(lines) do
+        local index, sts = line:match(active_ca)
+        if index and sts and sts == "ON" then
+        table.insert(active_cas, index)
+        end
+      end
+  
+      LobeInfoCA(lines, dynamic, lobe_dynamic)
+      LobeInfoCA(lines, dedicated, lobe_dedicated)
+      init_ca = true -- initial flag off
+      RemoveLobeInfo(lines, remove_ca, lobe_dynamic)
+      RemoveLobeInfo(lines, remove_ca, lobe_dedicated)
+      --print("REP:".."lobe_dynamic:["..lobe_num.."]"..rapidjson.encode(lobe_dynamic) )
+      --print("REP:".."lobe_dedicated:["..lobe_num.."]"..rapidjson.encode(lobe_dedicated) )
+      DrawCampus(autocoverage, axis, nscale, nangle, active)
+      for a, active in ipairs(active_cas) do
+        print("acteive_ca_index: "..active)
+        for x, v in pairs(activemicled) do
+          v.Boolean = false
+        end
+        print("active mic: "..active==a, active, a)
+        activemicled[tonumber(active)].Boolean = true
+        for i=1,8 do
+            FanoutMixer["input.1.output."..i..".gain"].Value = -100
+        end
+        FanoutMixer["input.1.output."..(tonumber(active))..".gain"].Value = 0
+        DrawCampus(autocoverage, axis, nscale, nangle, active)
+      end
+      return lobe_num, lobe_dynamic, lobe_dedicated
+    end
+  end
+  --Get Auto Coverage Response-------------------------------------------------------------------
+  function GetAutoCoverage(str)
+    if str:find("MXA920") then
+      sock:Write("< GET AUTO_COVERAGE >")
+      Timer.CallAfter(function()
+        sock:Write("< GET 0 CA_DYNAMIC >")
+        sock:Write("< GET 0 CA_DEDICATED >")
+      end, 0.5)
+      auto_ca.IsDisabled = false
+    elseif str:find("MXA910") then
+      auto_ca.Boolean = false
+      auto_ca.IsDisabled = true
+      auto_ca.Legend = "CA OFF"
+      auto_ca.Color = "gray"
+      autocoverage = false
+      DrawCampus(autocoverage, axis, nscale, nangle)
+    end
+    if type(str) == "string" and str ~= "" then
+      --print("REP Coverage, Mute, LED", str)
+      local CA = "< REP AUTO_COVERAGE (%a+) >"
+      local rm = "< REP DEVICE_AUDIO_MUTE (%a+) >"
+      local lm = "< REP DEVICE_LED_IN_STATE (%a+) >"
+      local ld = "< REP LED_BRIGHTNESS (%d+) >"
+      local match = str:match(CA)
+      local matchrm = str:match(rm)
+      local matchlm = str:match(lm)
+      local matchld = str:match(ld)
+      if match ~= nil then
+        local flg = (match == "ON")
+        --print("match: "..match, "flg: "..tostring(flg) )
+        print("REP Coverage", str)
+        if flg then
+          sock:Write("< GET 0 CA_DYNAMIC >")
+          sock:Write("< GET 0 CA_DEDICATED >")
+        end
+        auto_ca.Boolean = flg
+        autocoverage = flg
+        if flg ~= auto_ca.Boolean then
+          auto_ca.EventHandler()
+        end
+      end
+      if matchrm ~= nil then
+        print("REP Mute", str)
+        local statem = (matchrm == "ON")
+        globalmute.Boolean = statem
+      end
+      if matchlm ~= nil then
+        print("REP LED", str)
+        local statel = (matchlm == "ON")
+        ledmute.Boolean = statel
+      end
+      if matchld ~= nil then
+        if tonumber(matchld) == 0 then
+          print("REP LED Brightness Off", str, matchld)
+          ledbrightmute.Boolean = true
+          ledbright.Value = tonumber(matchld)
+        elseif tonumber(matchld) >= 1 then
+          print("REP LED Brightness On", str, matchld)
+          ledbrightmute.Boolean = false
+          ledbright.Value = tonumber(matchld)
+        end
+      end
+    end
+  end
+  
+  --fillOpacity and color
+  function RelationColor()
+    L_af_fillColor = Controls.Lobe_FillColor.String == "" and "#9bd6ed" or Controls.Lobe_FillColor.String
+    L_af_fillOpacity = Controls.Lobe_Opacity.Value == 0 and 0.15 or tonumber(string.format("%.2f", Controls.Lobe_Opacity.Value))
+    L_af_strokeColor = L_af_fillColor
+  
+    CA_fillColor = Controls.CA_FillColor.String == "" and "gray" or Controls.CA_FillColor.String
+    CA_fillOpacity = Controls.CA_Opacity.Value == 0 and 0.4 or tonumber(string.format("%.2f", Controls.CA_Opacity.Value))
+  
+    Active_Color = Controls.ActiveColor.String == "" and "lime" or Controls.ActiveColor.String
+  
+    L_strokeWidth = Controls.Lobe_StrokeWidth.Value == 0 and docSize*0.01 or Controls.Lobe_StrokeWidth.Value
+    L_af_strokeWidth = L_strokeWidth
+    CA_strokeWidth = Controls.CA_StrokeWidth.Value == 0 and docSize*0.01 or Controls.CA_StrokeWidth.Value
+    CA_De_strokeWidth = Controls.CA_De_StrokeWidth.Value == 0 and docSize*0.01 or Controls.CA_De_StrokeWidth.Value
+  
+    Controls.LEDLightColor.Choices = {"red","orange","gold","yellow","yellowgreen","lime","turquoise","powderblue","cyan","skyblue","blue","purple","lightpurple","violet","orchid","pink","white"}
+    if Controls.LEDLightColor.String == nil then
+      ledlightColor = Controls.LEDLightColor.String == "" and "lime" or Controls.LEDLightColor.String
+    else
+      ledlightColor = Controls.LEDLightColor.String == "" and "lime" or Controls.LEDLightColor.String
+    end
+    Controls.Lobe_FillColor.String, Controls.Lobe_FillColor.Color, Controls.Lobe_Opacity.Value = L_af_fillColor, L_af_fillColor, L_af_fillOpacity
+    Controls.CA_FillColor.String, Controls.CA_FillColor.Color, Controls.CA_Opacity.Value = CA_fillColor, CA_fillColor, CA_fillOpacity
+    Controls.ActiveColor.String = Active_Color
+    Controls.ActiveColor.Color = Active_Color
+    Controls.LEDLightColor.String = ledlightColor
+    Controls.LEDLightColor.Color = ledlightColor
+    Controls.Lobe_StrokeWidth.Value, Controls.CA_StrokeWidth.Value, Controls.CA_De_StrokeWidth.Value = L_strokeWidth, CA_strokeWidth, CA_De_strokeWidth
+    DrawCampus(autocoverage, axis, nscale, nangle, active, mode)
+  end
+  RelationColor()
+  Controls.Lobe_FillColor.EventHandler    = RelationColor
+  Controls.Lobe_Opacity.EventHandler      = RelationColor
+  Controls.CA_FillColor.EventHandler      = RelationColor
+  Controls.CA_Opacity.EventHandler        = RelationColor
+  Controls.LEDLightColor.EventHandler     = RelationColor
+  Controls.ActiveColor.EventHandler       = RelationColor
+  Controls.Lobe_StrokeWidth.EventHandler  = RelationColor
+  Controls.CA_StrokeWidth.EventHandler    = RelationColor
+  Controls.CA_De_StrokeWidth.EventHandler = RelationColor
+  
+  --EventHandler-----------------------------------------------------------------------
+  auto_ca.EventHandler = function()
+    if auto_ca.Boolean == false then
+      auto_ca.Legend = "CA OFF"
+      auto_ca.Color = "gray"
+      --print("< SET AUTO_COVERAGE OFF >")
+      if sock.IsConnected then sock:Write("< SET AUTO_COVERAGE OFF >") end
+    else
+      auto_ca.Legend = "CA ON"
+      auto_ca.Color = "blue"
+      --print("< SET AUTO_COVERAGE ON >")
+      if sock.IsConnected then sock:Write("< SET AUTO_COVERAGE ON >") end
+    end
+    Timer.CallAfter(function()
+      sock:Write("< GET 0 ALL >")
+      sock:Write("< GET ALL >")
+    end , 1)
+    DrawCampus(autocoverage, axis, nscale, nangle)
+  end
+
+  globalmute.EventHandler = function()
+    if globalmute.Boolean then
+      sock:Write ("< SET DEVICE_AUDIO_MUTE ON >")
+      print("< SET DEVICE_AUDIO_MUTE ON >")
+    else
+      sock:Write ("< SET DEVICE_AUDIO_MUTE OFF >")
+      print("< SET DEVICE_AUDIO_MUTE OFF >")
+    end
+  end
+
+  ledmute.EventHandler = function()
+    if ledmute.Boolean then
+      sock:Write("< SET DEV_LED_IN_STATE OFF >")
+      print("< SET DEV_LED_IN_STATE OFF >")
+    else
+      sock:Write("< SET DEV_LED_IN_STATE ON >")
+      print("< SET DEV_LED_IN_STATE ON >")
+    end
+  end
+
+  ledbrightmute.EventHandler = function()
+    if ledbrightmute.Boolean then
+      sock:Write("< SET LED_BRIGHTNESS 0 >")
+      print("< SET LED_BRIGHTNESS 0 >")
+    else
+      sock:Write("< SET LED_BRIGHTNESS 5 >")
+      print("< SET LED_BRIGHTNESS 5 >")
+    end
+  end
+
+  ledbright.EventHandler = function()
+    local ledv = tostring(math.floor(ledbright.Value))
+    sock:Write("< SET LED_BRIGHTNESS "..ledv.." >")
+    print("< SET LED_BRIGHTNESS "..ledv.." >")
+  end
+
+  OutLevel = {Controls.OutLevel1, Controls.OutLevel2, Controls.OutLevel3, Controls.OutLevel4, Controls.OutLevel5, Controls.OutLevel6, Controls.OutLevel7, Controls.OutLevel8}
+  OutMute = {Controls.OutMute1, Controls.OutMute2, Controls.OutMute3, Controls.OutMute4, Controls.OutMute5, Controls.OutMute6, Controls.OutMute7, Controls.OutMute8}
+
+  for i, gain in pairs(OutLevel) do
+    gain.EventHandler = function()
+        FanoutMixer["output."..i..".gain"].Value = gain.Value
+        print("Mixer Input Gain", FanoutMixer["output."..i..".gain"].Value, gain.Value)
+    end
+  end
+
+  for i, mute in pairs(OutMute) do
+    mute.EventHandler = function()
+        FanoutMixer["output."..i..".mute"].Boolean = mute.Boolean
+        print("Mixer Input Mute", FanoutMixer["output."..i..".mute"].Boolean, mute.Boolean)
+    end
+  end
+
+  for key, ctrl in pairs(Controls.Preset) do
+    ctrl.EventHandler = function()
+      for i, p in pairs(Controls.Preset) do
+        p.Boolean = (key==i)
+      end
+      sock:Write("< SET PRESET 0"..key.." >")
+      print("< SET PRESET 0"..key.." >")
+    end
+  end
+  
+  --scaling
+  scale.EventHandler = function()
+    -- Get the current scale value
+    nscale = scale.Value
+    -- Create a new SVG document
+    DrawCampus(autocoverage, axis, nscale, nangle)
+  end
+  scale.EventHandler()
+  
+  --rotate
+  angle.EventHandler = function()
+    nangle = angle.Value
+    if math.abs(angle.Value) == 360 then
+      angle.Value = 0
+    end
+    DrawCampus(autocoverage, axis, nscale, nangle)
+  end
+  
+  --Axis ON/OFF
+  xy_axis.EventHandler = function(arg)
+    axis = xy_axis.Boolean
+    if arg == "ON" then
+      xy_axis.Boolean = true
+      xy_axis.Legend = "ON"
+      xy_axis.Color = "green"
+    else
+      xy_axis.Legend = axis and "ON" or "OFF"
+      xy_axis.Color = axis and "green" or "gray"
+    end
+    DrawCampus(autocoverage, axis, nscale, nangle)
+  end
+  xy_axis.EventHandler("OFF")
+end
