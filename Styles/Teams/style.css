@@ -1,0 +1,390 @@
+/* TEAMS FONTS - The Segoe family of fonts is the primary font specified by Microsoft, Roboto is also considered acceptable. 
+/* Custom Fonts are supported through CSS. In order to leverage these fonts, they must be copied into the Q-SYS Style folder*/
+
+/* CONTROLS */
+
+page {
+  background-color: #2D2C2C;
+}
+
+textbox {
+  color: #F3F2F1; 
+  font-family: 'Segoe UI'; 
+  background-color:rgb(32,31,31);
+  border: 0px transparent;
+  font-family: 'Segoe UI';
+  font-size: 24px;
+  text-align: left;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+led {
+  background-color:#464775;
+  border: 0px transparent;
+}
+
+led:value(1) {
+  background-color: #6264a7;
+  border: 0px transparent;
+}
+
+combobox {
+  background-color: rgb(32,31,31);
+  color: #F3F2F1; 
+  font-family: 'Segoe UI';
+  font-size: 24px;
+  padding: 10px;
+  text-align: left;
+  border: 0px transparent;
+}
+
+listbox {
+  background-color: rgb(32,31,31);
+  color: #F3F2F1; 
+  font-family: 'Segoe UI';
+  font-size: 24px;
+  padding: 10px;
+  text-align: left;
+  border: 0px transparent;
+}
+
+fader {
+  background-color: #6264a7;
+  border: 1px #505050;
+  font-family: 'Segoe UI';
+  color: #F3F2F1;
+  font-size: 14px;
+}
+
+meter {
+  background-color: #3B3A39;
+  color: #6264a7; 
+  border: 0px transparent;
+}
+
+.textboxfader {
+  color: #F3F2F1; 
+  background-color: #6264a7;
+  border: 0px transparent;
+  font-family: 'Segoe UI';
+  font-size: 24px;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.buttonprimary {
+  background-color: #464775;
+  border: 1px #505050;
+  font-family: 'Segoe UI';
+  color: #F3F2F1;
+  font-size: 24px;
+  border-radius: 3px;
+}
+
+.buttonprimary:value(1) {
+  background-color: #6264A7;
+  color: #F3F2F1;
+  border: 1px #505050;
+}
+
+.buttonsecondary {
+  background-color: transparent;
+  border: 1px #505050;
+  font-family: 'Segoe UI';
+  color: #F3F2F1;
+  font-size: 24px;
+  text-align: center;
+  border-radius: 3px;
+}
+
+.buttonsecondary:value(1) {
+  background-color: #6264a7;
+  color: #F3F2F1;
+}
+
+.buttonsnapshot {
+  background-color: #464775;
+  border: 1px #505050;
+  font-family: 'Segoe UI';
+  color: #F3F2F1;
+  font-size: 24px;
+  border-radius: 3px;
+}
+
+.buttonsnapshot:value(1) {
+  background-color: #585A96;
+  color: #F3F2F1;
+  border: 1px #505050;
+}
+
+.buttonsnapshot:value(2) {
+  background-color: #6264A7;
+  color: #F3F2F1;
+  border: 1px #505050;
+}
+
+.texttitle {
+  color: #F3F2F1; 
+  font-family: 'Segoe UI Bold';
+  font-size: 40px;
+  text-align: left;
+}
+
+.textheading {
+  color: #F3F2F1; 
+  font-family: 'Segoe UI Bold';
+  font-size: 24px;
+  text-align: left;
+}
+
+.textbody {
+  color: #F3F2F1; 
+  font-family: 'Segoe UI';
+  font-size: 24px;
+  text-align: left;
+}
+
+.textlabel {
+  color: #F3F2F1; 
+  font-family: 'Segoe UI Light';
+  font-size: 22px;
+  text-align: left;
+}
+
+.textlabeldisplay {
+  color: #F3F2F1;
+  background-color: transparent; 
+  font-family: 'Segoe UI Light';
+  font-size: 22px;
+}
+
+.texttitledisplay {
+  color: #F3F2F1;
+  background-color: transparent; 
+  font-family: 'Segoe UI Bold';
+  font-size: 40px;
+}
+
+.textbodydisplay {
+  color: #F3F2F1;
+  background-color: transparent; 
+  font-family: 'Segoe UI';
+  font-size: 24px;
+}
+
+.textheadingdisplay {
+  color: #F3F2F1;
+  background-color: transparent;  
+  font-family: 'Segoe UI Bold';
+  font-size: 24px;
+}
+
+.justifyleft {
+  text-align: left;
+}
+
+.justifycenter {
+  text-align: center;
+}
+
+.justifyright {
+  text-align: right;
+}
+
+/* ICONS */
+
+.iconeye {
+  background-image: url("icons/eye-off-line.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 75%;
+  border-radius: 3px;
+}
+
+.iconeye:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconhome {
+  background-image: url("icons/home-line.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconhome:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconvolup {
+  background-image: url("icons/volume-up.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconvolup:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconvoldown {
+  background-image: url("icons/volume-down.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconvoldown:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconvolmute {
+  background-image: url("icons/volume-mute.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconvolmute:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconvoloff {
+  background-image: url("icons/volume-off.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconvoloff:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconleft {
+  background-image: url("icons/arrow-left-circle.svg");
+  background-color: transparent;
+  border: 0px #505050;
+  background-size: 90%;
+  border-radius: 3px;  
+}
+
+.iconleft:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconright {
+  background-image: url("icons/arrow-right-circle.svg");
+  background-color: transparent;
+  border: 0px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconright:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconup {
+  background-image: url("icons/arrow-up-circle.svg");
+  background-color: transparent;
+  border: 0px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconup:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.icondown {
+  background-image: url("icons/arrow-down-circle.svg");
+  background-color: transparent;
+  border: 0px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.icondown:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconzoomin {
+  background-image: url("icons/zoom-in-line.svg");
+  background-color: transparent;
+  border: 0px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconzoomin:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconzoomout {
+  background-image: url("icons/zoom-out-line.svg");
+  background-color: transparent;
+  border: 0px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconzoomout:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconpower {
+  background-image: url("icons/shut-down-line.svg");
+  background-color: #464775;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconpower:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.iconupbar {
+  background-image: url("icons/arrow-up-bar.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.iconupbar:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}
+
+.icondownbar {
+  background-image: url("icons/arrow-down-bar.svg");
+  background-color: transparent;
+  border: 1px #505050;
+  background-size: 90%;
+  border-radius: 3px;
+}
+
+.icondownbar:value(1) {
+  background-color:#6264a7;
+  border: 0px transparent;
+}

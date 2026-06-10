@@ -1,0 +1,1070 @@
+/*
+  Panel Theme by: Nathan Wells - ImageNet Consulting.
+
+ */
+
+page 
+{
+  background-image:url("images/Background3.png");
+  /*
+  background-color: rgb(51,51,51);
+  background-size:100% 100%;
+  */
+}
+  
+
+/***********************Visual Elements***********************/
+
+.group-box-purple
+{
+  background: rgb(84, 84, 128);
+  border-color: rgb(84, 84, 128);
+  border-radius: 5%;
+}
+
+.group-box-light-purle
+{
+  background: rgb(130, 130, 196);
+  border-color: rgb(130,130,96);
+  border-radius: 5%;
+}
+
+.group-box-grey
+{
+   background: rgb(0, 0, 0, 0.4);
+  border-color: rgb(0, 0, 0);
+  border-radius: 5%; 
+}
+
+.group-box-Integris-green
+{
+  background: rgb(38,155,128);
+  border-color: rgb(38,155,128);
+  border-radius: 5%;
+}
+
+.group-box-Integris-brighte-green
+{
+  background: rgb(99,217,203);
+  border-color: rgb(99,217,203);
+  border-radius: 5%;
+}
+
+.group-box-Integris-light
+{
+   background: rgb(213,222,229, 0.8);
+  border-color: rgb(213,222,229);
+  border-radius: 5%; 
+}
+
+
+/***********************Buttons***********************/
+
+.button_source 
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 15%;
+  -qsc-icon-align: center;
+}
+
+.button_source:value(1) 
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 15%;
+  -qsc-icon-align: center;
+}
+
+.button_source_Dark
+{
+  border-width:3px;
+  border-color: rgb(37, 36, 36);
+  border-radius: 15%;
+  -qsc-icon-align: center;
+}
+
+.button_source_Dark:value(1) 
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 15%;
+  -qsc-icon-align: center;
+}
+
+.button_source_DVD
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 15%;
+  background-image:url("images/DVD_icon.png");
+  background-size: 60% 65%;
+}
+
+.button_source_DVD:value(1) 
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 15%;
+  background-image:url("images/DVD_icon.png");
+  background-size: 60% 65%;
+}
+
+.button_General 
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  background: rgb(116,116,116,0);
+  border-radius: 6%;
+}
+
+.button_General:value(1) 
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 6%;
+}
+
+.button_General_Dark 
+{
+  border-width:3px;
+  border-color: rgb(37, 36, 36);
+  background: rgb(116,116,116,0);
+  border-radius: 6%;
+}
+
+.button_General_Dark:value(1) 
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 6%;
+}
+
+.button_power
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  opacity: 0.7;
+  -qsc-icon-font: foundation;
+  -qsc-icon: power;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 10%;
+}
+
+.button_mic_mute
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: mic;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+.button_mic_mute:value(1)
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: mic_off;
+  -qsc-icon-color: rgb(180,18,18);
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+.button_audio_mute
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: volume_up;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+.button_audio_mute:value(1)
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: volume_off;
+  -qsc-icon-color: rgb(180,18,18);
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+.button_mic_mute_Dark
+{
+  border-width:3px;
+  border-color: rgb(37, 36, 36);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: mic;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+.button_mic_mute_Dark:value(1)
+{
+  border-width:3px;
+  border-color: rgb(37, 36, 36);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: mic_off;
+  -qsc-icon-color: rgb(180,18,18);
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+.button_audio_mute_Dark
+{
+  border-width:3px;
+  border-color: rgb(37, 36, 36);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: volume_up;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+.button_audio_mute_Dark:value(1)
+{
+  border-width:3px;
+  border-color: rgb(37, 36, 36);
+  border-radius: 100%;
+  background: rgb(116,116,116,0);
+  -qsc-icon-font: material;
+  -qsc-icon: volume_off;
+  -qsc-icon-color: rgb(180,18,18);
+  -qsc-icon-align: center; 
+  padding: 10%;
+}
+
+
+/***********************Faders***********************/
+
+.fader_audio-Main
+{
+  background: rgb(84, 84, 128);
+}
+
+.fader_audio-Main_Integris
+{
+  background: rgb(38,155,128);
+}
+
+.fader_audio-other
+{
+  background: rgb(156, 152, 152);
+}
+
+.fader_audio-other_Light
+{
+  background: rgb(213,222,229);
+}
+
+.fader_audio-other_Dark
+{
+  background: rgb(51, 49, 49);
+}
+
+.fader_lighting
+{
+  background: rgb(214, 165, 58);
+}
+
+/***********************BUTTON ICONS***********************/
+
+
+.icon_laptop
+{
+  -qsc-icon-font: foundation;
+  -qsc-icon: laptop;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 5%;
+}
+
+.icon_laptop_Dark
+{
+  -qsc-icon-font: foundation;
+  -qsc-icon: laptop;
+  -qsc-icon-color: rgb(51, 49, 49);
+  -qsc-icon-align: center;
+  padding: 5%;
+}
+
+.icon_PC
+{
+  -qsc-icon-font: material;
+  -qsc-icon: desktop_windows;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 5%;
+}
+
+.icon_DVD
+{
+  background-image:url("images/DVD_icon.png");
+  background-size: 60% 60%;
+  padding: 5%;
+}
+
+.icon_ROKU
+{
+  background-image:url("images/ROKU_Icon.png");
+  background-size: 70% 30%;
+  padding: 5%;
+}
+
+.icon_AppleTV
+{
+  background-image:url("images/AppleTV_icon.png");
+  background-size: 70% 50%;
+}
+
+.icon_Wireless-Share
+{
+  -qsc-icon-font: material;
+  -qsc-icon: cast;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 5%;
+}
+
+.icon_Click-Share
+{
+  background-image:url("images/ClickShare_icon.png");
+  background-size: 65% 80%;
+}
+
+.icon_HDMI
+{
+  background-image:url("images/hdmi.png");
+  background-size: 65% 80%;
+}
+
+.icon_graphic
+{
+  -qsc-icon-font: material;
+  -qsc-icon: image;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 5%;
+}
+
+.icon_graphic_Dark
+{
+  -qsc-icon-font: material;
+  -qsc-icon: image;
+  -qsc-icon-color: rgb(51, 49, 49);
+  -qsc-icon-align: center;
+  padding: 5%;
+}
+
+
+/***********************Panel NAV BUTTONS***********************/
+
+.nav_Basic
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+}
+
+.nav_Basic:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+}
+
+.nav_camera
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: videocam;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+}
+
+.nav_camera:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: foundation;
+  -qsc-icon: video;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+}
+
+.nav_source
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: foundation;
+  -qsc-icon: monitor;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.nav_source:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: foundation;
+  -qsc-icon: monitor;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.nav_audio
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: tune;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 12px;
+}
+
+.nav_audio:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: tune;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 12px;
+}
+
+.nav_media-player
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: smart_display;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 12px;
+}
+
+.nav_media-player:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: smart_display;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 12px;
+}
+
+.nav_DVD
+{  
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  background-image:url("images/DVD_icon.png");
+  background-size: 60% 45%;
+}
+
+.nav_DVD:value(1)
+{  
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  background-image:url("images/DVD_icon.png");
+  background-size: 60% 45%;
+}
+
+.nav_wireless-presentation
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: cast;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.nav_wireless-presentation:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: cast;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.nav_lights
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: lightbulb;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.nav_more
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: more_horiz;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.nav_more:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: more_horiz;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+/***********************Text***********************/
+
+.text_nav-label
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(255, 255, 255);
+  font-family: Poppins;
+  font-size: 16px;
+  text-align: center;
+}
+
+.text_source-label
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(255, 255, 255);
+  font-family: Poppins;
+  font-size: 22px;
+  text-align: center;
+}
+
+.text_source-label_Dark
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(51, 49, 49);
+  font-family: Poppins;
+  font-size: 22px;
+  text-align: center;
+}
+
+
+.text_button-label
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(255, 255, 255);  
+  font-family: Poppins;
+  font-size: 22px;
+  text-align: center;
+  vertical-align: center;
+}
+
+.text_button-label_Dark
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(37, 36, 36);  
+  font-family: Poppins;
+  font-size: 22px;
+  text-align: center;
+  vertical-align: center;
+}
+
+.text_left-align
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(255, 255, 255);
+  font-family: Poppins;
+  font-size: 20px;
+  text-align: left;
+  vertical-align: center;
+}
+
+.text_left-align_Dark
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(51, 49, 49);
+  font-family: Poppins;
+  font-size: 20px;
+  text-align: left;
+  vertical-align: center;
+}
+
+.text_keypad
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(255, 255, 255);
+  font-family: Poppins;
+  font-size: 36px;
+  text-align: center;
+  vertical-align: center;
+}
+
+.text_keypad_Dark
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(37, 36, 36);
+  font-family: Poppins;
+  font-size: 36px;
+  text-align: center;
+  vertical-align: center;
+}
+
+
+.text_date-time
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(255, 255, 255);
+  font-family: Poppins;
+  font-size: 40px;
+  text-align: right;
+  vertical-align: center;
+}
+
+
+.text_room-name
+{
+  background-color: rgba(0,0,0,0);
+  color: rgb(255, 255, 255);
+  font-family: Poppins;
+  font-size: 36px;
+  text-align: right;
+  vertical-align: center;
+}
+
+
+
+
+/***********************Directional Buttons***********************/
+
+.arrow_up
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_upward;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_up:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_upward;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_up_Dark
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_upward;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_up_Dark:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_upward;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_down
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_downward;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_down:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_downward;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_down_Dark
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_downward;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_down_Dark:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_downward;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_left
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_back;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_left:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_back;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_left_Dark
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_back;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_left_Dark:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_back;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_right
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_forward;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_right:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_forard;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_right_Dark
+{
+  border-width:3px;
+  border-color: rgb(255,255,255);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_forward;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.arrow_right_Dark:value(1)
+{
+  background: rgb(116,116,116);
+  border-width:3px;
+  border-color: rgb(116,116,116);
+  border-radius: 100%;
+  -qsc-icon-font: material;
+  -qsc-icon: arrow_forard;
+  -qsc-icon-color: rgb(37, 36, 36);
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+/***********************Directional Buttons***********************/
+
+.transport_play
+{
+  -qsc-icon-font: material;
+  -qsc-icon: play_arrow;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_play:value(1)
+{
+  -qsc-icon-font: material;
+  -qsc-icon: play_arrow;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+
+.transport_stop
+{
+  -qsc-icon-font: material;
+  -qsc-icon: stop;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_stop:value(1)
+{
+  -qsc-icon-font: material;
+  -qsc-icon: stop;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+
+.transport_pause
+{
+  -qsc-icon-font: material;
+  -qsc-icon: pause;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_pause:value(1)
+{
+  -qsc-icon-font: material;
+  -qsc-icon: pause;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+
+.transport_fast-forward
+{
+  -qsc-icon-font: material;
+  -qsc-icon: fast_forward;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_fast-forward:value(1)
+{
+  -qsc-icon-font: material;
+  -qsc-icon: fast_forward;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_skip-next
+{
+  -qsc-icon-font: material;
+  -qsc-icon: skip_next;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_skip-next:value(1)
+{
+  -qsc-icon-font: material;
+  -qsc-icon: skip_next;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+
+.transport_fast-rewind
+{
+  -qsc-icon-font: material;
+  -qsc-icon: fast_rewind;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_fast-rewind:value(1)
+{
+  -qsc-icon-font: material;
+  -qsc-icon: fast_rewind;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+
+.transport_skip-previous
+{
+  -qsc-icon-font: material;
+  -qsc-icon: skip_previous;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+.transport_skip-previous:value(1)
+{
+  -qsc-icon-font: material;
+  -qsc-icon: skip_previous;
+  -qsc-icon-color: white;
+  -qsc-icon-align: center;
+  padding: 15px;
+}
+
+
+/***********************Meters***********************/
+
+.meter 
+{
+  color: rgb(133, 20, 186);
+  background-color: rgba(0,0,0,0);
+  border-top-color: rgb(149,149,149);
+  border-bottom-color: rgb(149,149,149);
+  border-left-color: rgb(149,149,149);
+  border-right-color: rgb(149,149,149);
+  border-radius: 10px;
+  border-width: 2px;
+}
+
+.meter_Light 
+{
+  color: rgb(133, 20, 186);
+  background-color: rgba(0,0,0,0);
+  border-top-color: rgb(213,222,229);
+  border-bottom-color: rgb(213,222,229);
+  border-left-color: rgb(213,222,229);
+  border-right-color: rgb(213,222,229);
+  border-radius: 10px;
+  border-width: 2px;
+}
+.meter_Dark
+{
+  color: rgb(133, 20, 186);
+  background-color: rgba(0,0,0,0);
+  border-top-color: rgb(37, 36, 36);
+  border-bottom-color: rgb(37, 36, 36);
+  border-left-color: rgb(37, 36, 36);
+  border-right-color: rgb(37, 36, 36);
+  border-radius: 10px;
+  border-width: 2px;
+}

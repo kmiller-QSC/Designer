@@ -1,0 +1,408 @@
+/* GOOGLE MEET FONTS - The Roboto family of fonts is the primary font specified by Google. 
+/* Custom Fonts are supported through CSS. In order to leverage custom fonts, they must be copied into the Q-SYS Style folder*/
+
+/* CONTROLS */
+
+page {
+  background-color: #F8F7F7
+}
+
+textbox {
+  color: #FFFFFF; 
+  font-family: 'Roboto';
+  background-color:rgb(32,31,31);
+  border: 0px transparent;
+  font-size: 32px;
+  text-align: left;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+led {
+  background-color:#424241;
+  border: 0px transparent;
+}
+
+led:value(1) {
+  background-color: #047ABF;
+  border: 0px transparent;
+}
+
+combobox {
+  background-color: #424241;
+  color: #FFFFFF; 
+  font-family: 'Roboto';
+  font-size: 32px;
+  padding: 10px;
+  text-align: left;
+  border: 0px transparent;
+}
+
+listbox {
+  background-color: rgb(32,31,31);
+  color: #FFFFFF; 
+  font-family: 'Roboto';
+  font-size: 32px;
+  padding: 10px;
+  text-align: left;
+  border: 0px transparent;
+}
+
+fader {
+  background-color: #E5E8EC;
+  border: 1px #424241;
+  font-family: 'Roboto';
+  color: #E5E8EC;
+  font-size: 20px;
+}
+
+meter {
+  background-color: transparent;
+  color: #047ABF; 
+  border: 1px #424241;
+}
+
+.textboxfader {
+  color: #FFFFFF; 
+  background-color: #E5E8EC;
+  border: 1px #424241;
+  font-family: 'Roboto';
+  font-size: 32px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.buttonprimary {
+  background-color: #E5E8EC;
+  border: 1px #424241;
+  font-family: 'Roboto';
+  color: #424241;
+  font-size: 32px;
+  border-radius: 5px;
+}
+
+.buttonprimary:value(1) {
+  background-color: #047ABF;
+  color: #FFFFFF;
+  border: 1px #424241;
+}
+
+.buttonsecondary {
+  background-color: #E5E8EC;
+  border: 1px #424241;
+  font-family: 'Roboto';
+  color: #424241;
+  font-size: 32px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.buttonsecondary:value(1) {
+  background-color: #424241;
+  color: #FFFFFF;
+}
+
+.buttonsnapshot {
+  background-color: #E5E8EC;
+  border: 1px #424241;
+  font-family: 'Roboto';
+  color: #424241;
+  font-size: 32px;
+  border-radius: 5px;
+}
+
+.buttonsnapshot:value(1) {
+  background-color: #E5E8EC;
+  color: #424241;
+  border: 1px #424241;
+}
+
+.buttonsnapshot:value(2) {
+  background-color: #047ABF;
+  color: #FFFFFF;
+  border: 1px #424241;
+}
+
+.buttonnavmenu {
+  background-color: #F8F7F7;
+  border: 1px #F8F7F7;
+  font-family: 'Roboto';
+  color: #424241;
+  font-size: 32px;
+  border-radius: 5px;
+  -qsc-icon-color: black;
+}
+
+.buttonnavmenu:value(1) {
+  background-color: #047ABF;
+  color: #FFFFFF;
+  border: 1px #424241;
+  -qsc-icon-color: white;
+}
+
+.texttitle {
+  color: #424241; 
+  font-family: 'Roboto Bold';
+  font-size: 50;
+  text-align: left;
+}
+
+.textheading {
+  color: #424241; 
+  font-family: 'Roboto Bold';
+  font-size: 40px;
+  text-align: left;
+}
+
+.textbody {
+  color: #424241; 
+  font-family: 'Roboto';
+  font-size: 32px;
+  text-align: left;
+}
+
+.textlabel {
+  color: #424241; 
+  font-family: 'Roboto Light';
+  font-size: 30px;
+  text-align: left;
+}
+
+.textlabeldisplay {
+  color: #424241;
+  background-color: transparent; 
+  font-family: 'Roboto Light';
+  font-size: 30px;
+}
+
+.texttitledisplay {
+  color: #424241;
+  background-color: transparent; 
+  font-family: 'Roboto Bold';
+  font-size: 50px;
+}
+
+.textbodydisplay {
+  color: #424241;
+  background-color: transparent; 
+  font-family: 'Roboto';
+  font-size: 32px;
+}
+
+.textheadingdisplay {
+  color: #424241;
+  background-color: transparent;  
+  font-family: 'Roboto Bold';
+  font-size: 32px;
+}
+
+.justifyleft {
+  text-align: left;
+}
+
+.justifycenter {
+  text-align: center;
+}
+
+.justifyright {
+  text-align: right;
+}
+
+/* ICONS */
+
+.iconeye {
+  background-image: url("icons/eye-off-line.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 75%;
+  border-radius: 5px;
+}
+
+.iconeye:value(1) {
+  background-image: url("icons/eye-off-line-white.svg");
+  background-color:#047ABF;
+  border: 0px transparent;
+}
+
+.iconhome {
+  background-image: url("icons/home-line.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconhome:value(1) {
+  background-image: url("icons/home-line-white.svg");
+  background-color:#047ABF;
+  border: 0px transparent;
+}
+
+.iconvolup {
+  background-image: url("icons/volume-up.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvolup:value(1) {
+  background-image: url("icons/volume-up-white.svg");
+  background-color:#047ABF;
+  border: 0px transparent;
+}
+
+.iconvoldown {
+  background-image: url("icons/volume-down.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvoldown:value(1) {
+  background-image: url("icons/volume-down-white.svg");
+  background-color:#047ABF;
+  border: 0px transparent;
+}
+
+.iconvolmute {
+  background-image: url("icons/volume-mute.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvolmute:value(1) {
+  background-image: url("icons/volume-mute-white.svg");
+  background-color:#047ABF;
+  border: 0px transparent;
+}
+
+.iconvoloff {
+  background-image: url("icons/volume-off.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvoloff:value(1) {
+  background-image: url("icons/volume-off-white.svg");
+  background-color:#047ABF;
+  border: 0px transparent;
+}
+
+.iconleft {
+  background-image: url("icons/arrow-left.svg");
+  background-color: transparent;
+  border: 0px #424241;
+  background-size: 55%;
+  border-radius: 5px;  
+}
+
+.iconleft:value(1) {
+  border: 1px #424241;
+}
+
+.iconright {
+  background-image: url("icons/arrow-right.svg");
+  background-color: transparent;
+  border: 0px #424241;
+  background-size: 55%;
+  border-radius: 5px;
+}
+
+.iconright:value(1) {
+  border: 1px #424241;
+}
+
+.iconup {
+  background-image: url("icons/arrow-up.svg");
+  background-color: transparent;
+  border: 0px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconup:value(1) {
+  border: 1px #424241;
+}
+
+.icondown {
+  background-image: url("icons/arrow-down.svg");
+  background-color: transparent;
+  border: 0px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.icondown:value(1) {
+  border: 1px #424241;
+}
+
+.iconzoomin {
+  background-image: url("icons/zoom-in.svg");
+  background-color: transparent;
+  border: 0px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconzoomin:value(1) {
+  border: 1px #424241;
+}
+
+.iconzoomout {
+  background-image: url("icons/zoom-out.svg");
+  background-color: transparent;
+  border: 0px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconzoomout:value(1) {
+  border: 1px #424241;
+}
+
+.iconpower {
+  background-image: url("icons/shut-down.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 70%;
+  border-radius: 5px;
+}
+
+.iconpower:value(1) {
+  background-image: url("icons/shut-down-white.svg");
+  background-color:#047ABF;
+  background-size: 70%;
+  border: 0px transparent;
+}
+
+.iconupbar {
+  background-image: url("icons/arrow-up-bar.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconupbar:value(1) {
+  background-color:#047ABF;
+  border: 0px transparent;
+}
+
+.icondownbar {
+  background-image: url("icons/arrow-down-bar.svg");
+  background-color: transparent;
+  border: 1px #424241;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.icondownbar:value(1) {
+  background-color:#047ABF;
+  border: 0px transparent;
+}

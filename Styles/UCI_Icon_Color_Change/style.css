@@ -1,0 +1,41 @@
+.CameraIcon:value(1){
+    background: transparent url("Images/CameraIcon_on.svg");
+    border: 0px;
+}
+.CameraIcon{
+    background: transparent url("Images/CameraIcon_off.svg");
+    border: 0px;
+}
+.ChatIcon:value(1){
+    background: transparent url("Images/ChatIcon_on.svg");
+    border: 0px;
+}
+.ChatIcon{
+    background: transparent url("Images/ChatIcon_off.svg");
+    border: 0px;
+}
+.MicIcon:value(1){
+    background: transparent url("Images/Micicon_on.svg");
+    border: 0px;
+}
+.MicIcon{
+    background: transparent url("Images/Micicon_off.svg");
+    border: 0px;
+}
+.VideoIcon:value(1){
+    background: transparent url("Images/VideoIcon_on.svg");
+    border: 0px;
+}
+.VideoIcon{
+    background: transparent url("Images/VideoIcon_off.svg");
+    border: 0px;
+}
+.VolumeIcon:value(1){
+    background: transparent url("Images/VolumeIcon_on.svg");
+    border: 0px;
+}
+.VolumeIcon{
+    background: transparent url("Images/VolumeIcon_off.svg");
+    border: 0px;
+}
+

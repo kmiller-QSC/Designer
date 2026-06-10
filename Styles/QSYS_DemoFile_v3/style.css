@@ -1,0 +1,776 @@
+/*
+ Q-SYS Template
+ Created by P. Heyn / K. Rhodus - QSC
+ Version 3.1 - Demo File v2 - 10 Apr 25
+ -Add in URI Variable
+
+ 
+ */
+
+
+ @font-face {
+  font-family: "SohneBreitHalbfett";
+  src: url(fonts/SohneBreit-Halbfett.otf );
+  format: ("opentype");
+}
+
+@font-face {
+  font-family: "SohneBuch";
+  src: url(fonts/Sohne-Buch.otf );
+  format: ("opentype");
+}
+
+@font-face {
+  font-family: "SohneFett";
+  src: url(fonts/Sohne-Fett.otf );
+  format: ("opentype");
+}
+
+@font-face {
+  font-family: "SohneKraftig";
+  src: url(fonts/Sohne-Kraftig.otf );
+  format: ("opentype");
+}
+
+@font-face {
+  font-family: "SohneMonoBuch";
+  src: url(fonts/SohneMono-Buch.otf );
+  format: ("opentype");
+}
+
+@font-face {
+  font-family: "SohneMonoKraftig";
+  src: url(fonts/SohneMono-Kraftig.otf );
+  format: ("opentype");
+}
+
+
+:root {
+  --primary-color: #6c6c6c;
+  --primary-light-color: white;
+  --primary-light-transparent: rgb(255, 255, 255);
+  --primary-dark-color: #031625;
+  --primary-dark-transparent: rgba(69, 72, 75, 0.561);
+  --secondary-color: white;
+
+  --background: #000000;
+
+  --alert: rgb(255,0,0);
+  --var_margin: 8px;
+  --var_padding: 10px;
+  --var_borderwidth: 3px;
+  --var-radius: 10px;
+
+  --btn-on-color: #0166ff;
+  --btn-off-color: rgb(255, 255, 255);
+  --btn-pressed-color: #ffeb67;
+  --btn-square: 00px;
+  --btn-round: 10px;
+
+}
+
+page {
+  background-color: black;
+}
+
+.tsc_page {
+    background-image: url(images/Background_Page.png);
+    background-size: 100% auto;
+
+}
+
+ /* 
+ Button Classes 
+ */  
+
+button {
+  /* Button Parameters */
+  background: #48494997;
+  border-width: var(--var_borderwidth);
+  border-radius: var(--var-radius);
+  border-top-color: var(--btn-off-color);
+  border-left-color: var(--btn-off-color);
+  border-right-color: var(--btn-off-color);
+  border-bottom-color: var(--btn-off-color);
+
+  padding: var(--var_padding);
+  margin: var(--var_margin);
+
+  /* Icon Paramanters */
+  -qsc-icon-font: material;
+  -qsc-icon-color: var(--btn-off-color);
+  -qsc-icon-align: right;
+
+  /* Text Paramanters */
+  font-family: SohneBuch;
+  font-size: 40vh;
+  color: var(--btn-off-color);
+}
+
+button:value(1) {
+  /* Icon Paramanters 
+  background: var(--background);*/
+  -qsc-icon-color: var(--btn-on-color);
+  border-top-color: var(--btn-on-color);
+  border-left-color: var(--btn-on-color);
+  border-right-color: var(--btn-on-color);
+  border-bottom-color: var(--btn-on-color);
+  
+  /* Text Paramanters */
+  color: var(--btn-on-color);
+}
+
+button:pressed:value(1) {
+  /* Icon Paramanters */
+  background: var(--btn-on-color);
+  -qsc-icon-color: var(--background);
+  border-width: 0px;
+  /* Text Paramanters */
+  color: var(--background);
+}
+
+button:pressed {
+  /* Icon Paramanters */
+  background: var(--btn-on-color);
+  -qsc-icon-color: var(--background);
+  border-width: 0px;
+  /* Text Paramanters */
+  color: var(--background);
+}
+
+
+.transparent {
+  background-color: rgba(0,0,0,0);
+  border-width: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.transparent:value(1) {
+  background-color: rgba(0,0,0,0);
+  border-width: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.transparent:pressed {
+  background-color: rgba(0,0,0,0);
+  border-width: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.transparent:pressed:value(1) {
+  background-color: rgba(0,0,0,0);
+  border-width: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.qr_background {
+  background-image: var(--QRCode);
+  background-size: 100% auto;
+  border-width: 0px;
+}
+
+.close {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "close";
+}
+
+
+.source_laptop {
+  /* Icon Paramanters */
+  -qsc-icon: "laptop";
+
+}
+
+.source_roomPC {
+  /* Icon Paramanters */
+  -qsc-icon: "desktop_windows";
+}
+
+.source_usb {
+  /* Icon Paramanters */
+  -qsc-icon: "usb";
+}
+
+.source_hdmi {
+  /* Icon Paramanters */
+  -qsc-icon: "settings_input_hdmi";
+}
+
+.in_call_icon {
+  /* Icon Paramanters */
+  -qsc-icon: "phone_in_talk";
+}
+
+.fbIcon{
+  /* Button Parameters */
+  margin: 0px;
+  padding: 0px;
+}
+
+/* Nav */
+.nav{
+  /* Button Parameters */
+  border-width: 0px;
+  border-radius:var(--var_squarebtn);
+  /* Icon Paramanters */
+  -qsc-icon-color: var(--primary-light-color);
+  /* Text Paramanters */
+  color: var(--primary-light-color);
+}
+
+.nav:value(1){
+  /* Button Parameters   */
+
+  /* Icon Paramanters */   
+  -qsc-icon-color: var(--btn-on-color);
+    /* Text Paramanters */
+    color: var(--primary-color);
+}
+
+.nav_display{
+  /* Icon Paramanters */
+  -qsc-icon: "dvr";    
+}
+
+.nav_camera{
+  /* Icon Paramanters */
+  -qsc-icon: "videocam";    
+}
+
+.nav_conference{
+  /* Icon Paramanters */
+  -qsc-icon: "groups";    
+}
+
+.nav_callsync{
+  /* Icon Paramanters */
+  -qsc-icon: "wifi_calling_3";   
+}
+
+.nav_audio{
+  /* Icon Paramanters */
+  -qsc-icon: "mic_external_on";    
+
+}
+
+.nav_help{
+  /* Icon Paramanters */
+  -qsc-icon: "live_help";    
+}
+
+
+.nav_logout{
+  /* Icon Paramanters */
+  -qsc-icon: "exit_to_app";    
+}
+
+.help{
+  /* Button Parameters */
+  border-width: var(--var_borderwidth);
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "live_help";
+  padding: 10px;
+}
+
+.direction-up {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "arrow_drop_up";
+}
+
+.direction-down {
+
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "arrow_drop_down";
+}
+
+.direction-left {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "arrow_left";
+}
+
+.direction-right {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "arrow_right";
+}
+
+.camera-zoom-in {
+  /* Button Parameters */
+  border-width: var(--var_borderwidth);
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "zoom_in";
+}
+
+.camera-zoom-in:value(1) {
+  /* Button Parameters */
+  background-color:rgba(0,0,0,0);
+  /* Icon Paramanters */
+  -qsc-icon-color:var(--primary-color);
+}
+
+.camera-zoom-out {
+  /* Button Parameters */
+  border-width: var(--var_borderwidth);
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "zoom_out";
+}
+
+.camera-zoom-out:value(1) {
+  /* Button Parameters */
+  background-color:rgba(0,0,0,0);
+  /* Icon Paramanters */
+  -qsc-icon-color:var(--primary-color);
+}
+
+.camera-privacy {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "lock_open";
+}
+
+.camera-privacy:value(1) {
+  /* Button Parameters */
+  border-top-color: var(--alert);
+  border-left-color: var(--alert);
+  border-right-color: var(--alert);
+  border-bottom-color: var(--alert);
+  /* Icon Paramanters */
+  -qsc-icon: "lock";
+  -qsc-icon-color: var(--alert);
+}
+
+.hangup {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  background-color: red;
+  padding: 10px;
+  /* Icon Paramanters */
+  -qsc-icon: "call_end";
+}
+
+.answer {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  background-color: green;
+  padding: 10px;
+  /* Icon Paramanters */
+  -qsc-icon: "call";
+}
+ 
+
+.speaker-mute {
+  /* Button Parameters */
+  border-radius: var(--btn-round);
+  /* Icon Paramanters */
+  -qsc-icon: "volume_up";
+}  
+
+.speaker-mute:value(1) {
+  /* Button Parameters */
+  background: rgba(0,0,0,0);
+  border-width: var(--var_borderwidth);
+  border-top-color: var(--alert);
+  border-left-color: var(--alert);
+  border-right-color: var(--alert);
+  border-bottom-color: var(--alert);
+  /* Icon Paramanters */
+  -qsc-icon: "volume_off";
+  -qsc-icon-color: var(--alert);
+} 
+
+
+.camera {
+  /* Button Parameters */
+
+  /* Icon Paramanters */
+  -qsc-icon: "videocam";
+}  
+
+
+.help-audio {
+  /* Button Parameters */
+
+  /* Icon Paramanters */
+  -qsc-icon: "mic";
+}
+
+.help-video {
+  /* Button Parameters */
+
+  /* Icon Paramanters */
+  -qsc-icon: "dvr";
+}
+
+.help-temp {
+  /* Button Parameters */
+
+  /* Icon Paramanters */
+  -qsc-icon: "thermostat";
+}
+
+.help-lighting {
+  /* Button Parameters */
+
+  /* Icon Paramanters */
+  -qsc-icon: "light_mode";
+}
+
+.camera-preview {
+  /* Button Parameters */
+  border-radius: 0px;
+  border-width: 1px;
+  border-color: var(--primary-light-color);
+  margin: 0px;
+  padding: 0px;
+}
+
+.preset {
+  /* Button Parameters */
+  border-radius: var(--var-radius);
+  /* Icon Paramanters */
+  -qsc-icon: "control_camera";
+  -qsc-icon-align: left;
+}
+
+.transparent_btn {
+  background-color:transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-width:0px;
+}
+
+.transparent_btn:value(1) {
+  background-color:transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-width:0px;
+}
+
+.transparent_btn:pressed {
+  background-color:transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-width:0px;
+}
+
+.transparent_btn:pressed:value(1) {
+  background-color:transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-width:0px;
+}
+
+
+/* 
+Meter Classes 
+*/ 
+
+meter {
+    /* Meter Parameters */
+  color: var(--primary-light-color);
+  background-color: rgba(0,0,0,0);
+
+  border-top-color: var(--primary-light-transparent);
+  border-bottom-color: var(--primary-light-transparent);
+  border-left-color: var(--primary-light-transparent);
+  border-right-color: var(--primary-light-transparent);;
+  border-radius: 10px;
+  border-width: var(--var_borderwidth);
+}
+
+/* 
+Groupbox Classes 
+*/ 
+
+.group_background {
+  background-image: url(images/Background.png);
+  background-size: 100% auto;
+  border-radius: 0px;
+  border-width: 0px;
+}
+
+.group-header {
+  /* Groupbox Parameters */
+  background-color: var(--primary-dark-transparent);
+
+  border-width: 0px;
+  border-radius: 0px;
+}
+
+.group-admin_mode {
+  /* Groupbox Parameters */
+  background-color: var(--secondary-color);
+
+  border-width: 0px;
+  border-radius: 0px;
+}
+
+
+.group-help {
+  /* Groupbox Parameters */
+  background-color: var(--background);
+
+  border-radius: var( --var-radius);
+  border-color: white;
+  border-width:  var(--var_borderwidth);
+}
+
+.group-dim {
+  /* Groupbox Parameters */
+  background-color: rgba(0, 0, 0, 0.4);
+  margin: 0px;
+  border-width: 0px;
+  border-radius: 0px;
+}
+
+.group-sides {
+  /* Groupbox Parameters */
+  background-color: rgba(0, 0, 0, 0.05);
+  border-width: 0px;
+  border-radius: 0px;
+}
+
+.logo {
+  /* Groupbox Parameters */
+  background-image:url("images/logo.png");
+  background-size: 90% auto;
+  background-color: rgba(0,0,0,0);
+
+  border-radius: 0px;
+  border-width: 0px
+  }
+
+.logo:pressed {
+  /* Icon Paramanters */
+  background-color: rgba(0,0,0,0);
+  background-size: 90% auto;
+  border-radius: 0px;
+  border-width: 0px
+}
+
+.logo:value(1) {
+  background-color: rgba(0,0,0,0);
+  background-size: 90% auto;
+  border-radius: 0px;
+  border-width: 0px 
+}
+
+.logo:pressed:value(1) {
+  background-color: rgba(0,0,0,0);
+  background-size: 90% auto;
+  border-radius: 0px;
+  border-width: 0px 
+}
+
+/* 
+ Knob Classes 
+ */ 
+
+
+ /* 
+ Text Classes 
+ */ 
+
+textbox {
+  /* Text Parameters */
+  background-color: rgba(0,0,0,0);
+  color: var(--secondary-color);
+
+  font-family: SohneBuch;
+  font-size: 60vh;
+
+  border-width: 0px;
+}
+
+textblock {
+  /* Text Parameters */
+  background-color: rgba(0,0,0,0);
+  color: var(--secondary-color);
+
+  font-family: SohneBuch;
+  font-size: 60vh;
+
+  border-width: 0px;
+}
+
+.text_HalfHeight {
+  font-size: 30vh;
+}
+
+.text_ThirdHeight {
+  font-size: 20vh;
+}
+
+header {
+  /* Text Parameters */
+  background-color: rgba(0,0,0,0);
+
+  font-family: SohneBuch;
+  font-size: 60vh;
+
+  border-width: 0px;
+}
+
+.text_dark {
+  /* Text Parameters */
+  color:var(--primary-dark-color);
+}
+
+.text_light {
+  /* Text Parameters */
+  color: var(--primary-light-color);
+}
+
+.text_left {
+  /* Text Parameters */
+  text-align: left;
+}
+
+.text_right {
+  /* Text Parameters */
+  text-align: right;
+}
+
+.text_center {
+  /* Text Parameters */
+  text-align: center;
+}
+
+.text_top {
+  /* Text Parameters */
+  vertical-align: top;
+}
+
+.text_Bold {
+  /* Text Parameters */
+  font-family: SohneFett;
+}
+
+
+
+.text_incall {
+  /* Text Parameters */
+  font-family: SohneFett;
+  color: var(--alert);
+}
+
+.text_HelpAlert {
+  /* Text Parameters */
+  font-family: SohneFett;
+  color: var(--background);
+  font-size: 35vh;
+  /* Textbox Parameters */
+  background-color: var(--alert);
+}
+
+.text_HelpResponse {
+  /* Text Parameters */
+  font-size: 10vh;
+ 
+}
+
+.text_HelpChoice {
+  /* Text Parameters */
+  font-size: 70vh;
+}
+
+.text_HelpConfirm {
+    /* Text Parameters */
+  font-size: 60vh;
+}
+
+.text_Status {
+    /* Text Parameters */
+    font-size: 20vh; 
+}
+
+.text_AdminAudio {
+    /* Text Parameters */
+ 
+    font-size: 15vw; 
+}
+
+.text-AdminHelpSend{
+  /* Text Parameters */
+
+  text-align: left;
+  vertical-align: top;
+  font-size: 20px;
+  /* Textbox Parameters */
+  border-width:var(--var_borderwidth);
+  border-top-color:var(--primary-color);
+  border-left-color: var(--primary-color);
+  border-right-color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+ 
+
+Listbox {
+  border-top-color: var(--primary-light-transparent);
+  border-left-color: var(--primary-light-transparent);
+  border-right-color: var(--primary-light-transparent);
+  border-bottom-color: var(--primary-light-transparent);
+  border-width: 5px;
+}
+
+/* Additions */
+
+.speaker-select{
+  -qsc-icon:"speaker_group";
+  border-radius: var(--btn-round);
+    }
+ 
+.audio-play{
+  -qsc-icon:"play_arrow";
+  background-color:#03471d;
+}
+
+.audio-play:value(1){
+  -qsc-icon:"play_arrow";
+  background-color:#03aa43;
+}
+
+.audio-stop{
+  -qsc-icon:"stop";
+  background-color:#3f403f;
+}
+
+.audio-stop:value(1){
+  -qsc-icon:"stop";
+  background-color:#8c8c8c;
+}
+.audio-pause{
+  -qsc-icon:"pause";
+  background-color:rgb(120, 118, 0);
+}
+
+.audio-pause:value(1){
+  -qsc-icon:"pause";
+  background-color:rgb(248, 244, 0);
+}

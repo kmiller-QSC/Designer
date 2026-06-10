@@ -1,0 +1,963 @@
+/* Zoom FONTS - The Inter family of fonts is the primary font specified by Zoom 
+/* Custom Fonts are supported through CSS. In order to leverage these fonts, they must be copied into the Q-SYS Style folder*/
+
+/* CONTROLS */
+
+@font-face {
+  font-family: "Inter";
+  src: url(fonts/Inter-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Inter Bold";
+  src: url(fonts/Inter-Bold.ttf);
+}
+
+@font-face {
+  font-family: "Inter Light";
+  src: url(fonts/Inter-Light.ttf);
+}
+
+page {
+  background-color: #FFFFFF;
+  border: 0px transparent;
+}
+
+.pagebackgroundsecondary {
+  background-color: #F7F7FC;
+  border: 1px #69696933;
+}
+
+led {
+  background-color:#de2828;
+  margin: 0px;
+  border: 0px transparent;
+}
+
+led:value(1) {
+  background-color: #23d959;
+  margin: 0px;
+  border: 0px transparent;
+}
+
+textbox {
+  color: #222230; 
+  font-family: 'Inter'; 
+  border: 0px transparent;
+  font-size: 32px;
+  text-align: left;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+combobox {
+  background-color: #F7F7FC;
+  color: #222230; 
+  font-family: 'Inter';
+  font-size: 32px;
+  padding: 10px;
+  text-align: left;
+  border: 0px transparent;
+}
+
+listbox {
+  background-color: #F7F7FC;
+  color: #222230; 
+  font-family: 'Inter';
+  font-size: 32px;
+  padding: 10px;
+  text-align: left;
+  border: 0px transparent;
+  border-radius: 8px;
+}
+
+fader {
+  -qsc-render-style: layer;
+  -qsc-fader-slot-class: fader-slot;
+  -qsc-fader-slot-width: 10px;
+  -qsc-fader-cap-class: fader-cap;
+  -qsc-fader-cap-width: 40vmin;
+  -qsc-fader-cap-height: 40vmin;
+  background-color: #FFFFFF;
+  border: 0px black;
+}
+
+.fader-slot { 
+  background-color: #EFEFF4;
+  border: 0px black;
+  border-radius: 50px;
+}
+
+.fader-slot:value(1) { 
+  background-color: #0E72ED;
+  border: 0px black;
+}
+.fader-cap {
+  background-color: #FFFFFF;
+  border: 1px #E0E0E8;
+  border-radius: 50%;
+}
+
+meter {
+  background-color: transparent;
+  color: #23D959; 
+  border: 1px #222230;
+  border-radius: 5px;
+}
+
+.metershade {
+  background-color: #0E72ED;
+  color: #FFFFFF; 
+  border: 1px #222230;
+  border-radius: 5px;
+}
+
+.textboxfader {
+  color: #F7F7FC; 
+  background-color: #F7F7FC;
+  border: 1px #222230;
+  font-family: 'Inter';
+  font-size: 32px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.buttonprimary {
+  background-color: #F7F7FC;
+  border: 0px #F7F7FC;
+  color: #222230;
+  font-family: 'Inter';
+  font-size: 20px;
+  border-radius: 8px;
+}
+
+.buttonprimary:value(1) {
+  background-color: #0862d1;
+  border: 0px #0862d1;
+  color: #FFFFFF;
+}
+
+.buttonsecondary {
+  background-color: #F7F7FC;
+  border: 0px #F7F7FC;
+  font-family: 'Inter';
+  font-size: 16px;
+  color: #222230;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.buttonsecondary:value(1) {
+  background-color: #E0E0E8;
+  color: #73737B;
+}
+
+.buttonsnapshot {
+  background-color: #E5E8EC;
+  border: 1px #222230;
+  font-family: 'Inter';
+  color: #222230;
+  font-size: 32px;
+  border-radius: 5px;
+}
+
+.buttonsnapshot:value(1) {
+  background-color: #E5E8EC;
+  color: #222230;
+  border: 1px #222230;
+}
+
+.buttonsnapshot:value(2) {
+  background-color: #0b5cff;
+  color: #FFFFFF;
+  border: 1px #222230;
+}
+
+.buttonnavmenutop {
+  background-color: #FFFFFF;
+  border-bottom: 1px #69696920;
+  color: #222230;
+  font-family: 'Inter';
+  font-size: 18px;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.buttonnavmenutop:value(1) {
+  background-color: #0862d1;
+  color: #FFFFFF;
+  border: 0px #0862d1;
+}
+
+.buttonnavmenumid {
+  background-color: #FFFFFF;
+  border-bottom: 1px #69696910;
+  color: #222230;
+  font-family: 'Inter';
+  font-size: 18px;
+  border-radius: 0px;
+}
+
+.buttonnavmenumid:value(1) {
+  background-color: #0862d1;
+  color: #FFFFFF;
+  border: 0px #0862d1;
+}
+
+.buttonnavmenubtm {
+  background-color: #FFFFFF;
+  border-top: 1px #69696920;
+  color: #222230;
+  font-family: 'Inter';
+  font-size: 18px;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.buttonnavmenubtm:value(1) {
+  background-color: #0862d1;
+  color: #FFFFFF;
+  border: 0px #0862d1;
+}
+
+.texttitle {
+  color: #222230; 
+  font-family: 'Inter Bold';
+  font-size: 58px;
+  text-align: left;
+}
+
+.textheading {
+  color: #222230; 
+  font-family: 'Inter Bold';
+  font-size: 26px;
+}
+
+.textbody {
+  color: #222230; 
+  font-family: 'Inter';
+  font-size: 32px;
+}
+
+.textlabel {
+  color: #222230; 
+  font-family: 'Inter Light';
+  font-size: 16px;
+}
+
+.textlabeldisplay {
+  color: #222230;
+  font-family: 'Inter Light';
+  font-size: 20px;
+}
+
+.texttitledisplay {
+  color: #222230;
+  font-family: 'Inter Bold';
+  font-size: 32px;
+}
+
+.textbodydisplay {
+  color: #222230;
+  font-family: 'Inter';
+  font-size: 32px;
+}
+
+.textheadingdisplay {
+  color: #222230;
+  font-family: 'Inter Bold';
+  font-size: 32px;
+}
+
+.justifyleft {
+  text-align: left;
+}
+
+.justifycenter {
+  text-align: center;
+}
+
+.justifyright {
+  text-align: right;
+}
+
+/* ICONS */
+
+.iconeye {
+  -qsc-icon: "visibility_off";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #222230;
+  -qsc-icon-align: left;
+}
+
+.iconeye:value(1) {
+  -qsc-icon: "visibility_off";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #FFFFFF;
+  -qsc-icon-align: left;
+}
+
+.iconhome {
+  -qsc-icon: "home";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #222230;
+  -qsc-icon-align: left;
+}
+
+.iconhome:value(1) {
+  -qsc-icon: "home";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #FFFFFF;
+  -qsc-icon-align: left;
+}
+
+.iconadvaudio {
+  -qsc-icon: "equalizer";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #222230;
+  -qsc-icon-align: left;
+}
+
+.iconadvaudio:value(1) {
+  -qsc-icon: "equalizer";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #FFFFFF;
+  -qsc-icon-align: left;
+}
+
+.iconmicmute {
+  -qsc-icon: "mic_none";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #222230;
+  -qsc-icon-align: left;
+}
+
+.iconmicmute:value(1) {
+  -qsc-icon: "mic_off";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #FFFFFF;
+  -qsc-icon-align: left;
+}
+
+.iconspkmute {
+  -qsc-icon: "volume_up";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #222230;
+  -qsc-icon-align: left;
+}
+.iconspkmute:value(1) {
+  -qsc-icon: "volume_off";
+  -qsc-icon-font: material;
+  -qsc-icon-color: #FFFFFF;
+  -qsc-icon-align: left;
+}
+
+.iconleft {
+  background-image: url("icons/arrow-left.svg");
+  background-color: transparent;
+  background-size: 55%;
+  border-radius: 5px;  
+}
+
+.iconleft:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconright {
+  background-image: url("icons/arrow-right.svg");
+  background-color: transparent;
+  background-size: 55%;
+  border-radius: 5px;
+}
+
+.iconright:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconup {
+  background-image: url("icons/arrow-up.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconup:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.icondown {
+  background-image: url("icons/arrow-down.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.icondown:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconvolup {
+  background-image: url("icons/volume-up.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvolup:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconvoldown {
+  background-image: url("icons/volume-down.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvoldown:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconvolmute {
+  background-image: url("icons/volume-mute.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvolmute:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconvoloff {
+  background-image: url("icons/volume-off.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconvoloff:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+
+.iconzoomin {
+  background-image: url("icons/zoom-in.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconzoomin:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconzoomout {
+  background-image: url("icons/zoom-out.svg");
+  background-color: transparent;
+  background-size: 90%;
+  border-radius: 5px;
+}
+
+.iconzoomout:value(1) {
+  background-color: #22223030;
+  border: 1px #22223030;
+}
+
+.iconpower {
+  background-image: url("icons/shut-down.svg");
+  background-size: 70%;
+  border-radius: 5px;
+}
+
+.iconpower:value(1) {
+  background-image: url("icons/shut-down-white.svg");
+  background-size: 70%;
+  border-radius: 5px;
+}
+
+/* Zoom Icons*/
+.iconairconditioner{
+  background-image: url("icons/zoom/Air conditioner.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconairconditioner:value(1){
+  background-image: url("icons/zoom/Air conditioner white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconcabletv{
+  background-image: url("icons/zoom/Cable TV.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconcabletv:value(1){
+  background-image: url("icons/zoom/Cable TV white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconceilinglighting{
+  background-image: url("icons/zoom/Ceiling light.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconceilinglighting:value(1){
+  background-image: url("icons/zoom/Ceiling light white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconceilingmic{
+  background-image: url("icons/zoom/Ceiling mic.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconceilingmic:value(1){
+  background-image: url("icons/zoom/Ceiling mic white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconcamera{
+  background-image: url("icons/zoom/control_camera_black_24dp.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconcamera:value(1){
+  background-image: url("icons/zoom/control_camera_black_24dp_white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconcurtain{
+  background-image: url("icons/zoom/Curtain.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconcurtain:value(1){
+  background-image: url("icons/zoom/Curtain white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.icondvdplayer{
+  background-image: url("icons/zoom/DVD player.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.icondvdplayer:value(1){
+  background-image: url("icons/zoom/DVD player white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconfan{
+  background-image: url("icons/zoom/Fan.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconfan:value(1){
+  background-image: url("icons/zoom/Fan white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.icongamecontroller{
+  background-image: url("icons/zoom/Game controller.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.icongamecontroller:value(1){
+  background-image: url("icons/zoom/Game controller white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconhdmi{
+  background-image: url("icons/zoom/HDMI.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconhdmi:value(1){
+  background-image: url("icons/zoom/HDMI white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconhelp{
+  background-image: url("icons/zoom/help_outline_black_24dp.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconhelp:value(1){
+  background-image: url("icons/zoom/help_outline_black_24dp_white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconprojector{
+  background-image: url("icons/zoom/Projector.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconprojector:value(1){
+  background-image: url("icons/zoom/Projector white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconrackequipment{
+  background-image: url("icons/zoom/Rack equipment.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconrackequipment:value(1){
+  background-image: url("icons/zoom/Rack equipment white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconsatdish{
+  background-image: url("icons/zoom/Satellite dish.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconsatdish:value(1){
+  background-image: url("icons/zoom/Satellite dish white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconsnowflake{
+  background-image: url("icons/zoom/Snowflake.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconsnowflake:value(1){
+  background-image: url("icons/zoom/Snowflake white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+.iconspeakerphone{
+  background-image: url("icons/zoom/Speaker phone.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconspeakerphone:value(1){
+  background-image: url("icons/zoom/Speaker phone white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconspeaker{
+  background-image: url("icons/zoom/Speaker.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconspeaker:value(1){
+  background-image: url("icons/zoom/Speaker white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconstatus{
+  background-image: url("icons/zoom/ssid_chart_black_24dp.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconstatus:value(1){
+  background-image: url("icons/zoom/ssid_chart_white_24dp.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconsun{
+  background-image: url("icons/zoom/Sun.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.iconsun:value(1){
+  background-image: url("icons/zoom/Sun white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.icontv{
+  background-image: url("icons/zoom/tv_black_24dp.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+
+.icontv:value(1){
+  background-image: url("icons/zoom/tv_black_24dp_white.svg");
+  background-position: 5px;
+  background-size: 15%;
+}
+/* ICONS TOP NAVIGATION Version*/ 
+.icontopairconditioner{
+  background-image: url("icons/zoom/Air conditioner.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopairconditioner:value(1){
+  background-image: url("icons/zoom/Air conditioner white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopcabletv{
+  background-image: url("icons/zoom/Cable TV.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopcabletv:value(1){
+  background-image: url("icons/zoom/Cable TV white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopceilinglighting{
+  background-image: url("icons/zoom/Ceiling light.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopceilinglighting:value(1){
+  background-image: url("icons/zoom/Ceiling light white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopceilingmic{
+  background-image: url("icons/zoom/Ceiling mic.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopceilingmic:value(1){
+  background-image: url("icons/zoom/Ceiling mic white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopcamera{
+  background-image: url("icons/zoom/control_camera_black_24dp.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopcamera:value(1){
+  background-image: url("icons/zoom/control_camera_black_24dp_white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopcurtain{
+  background-image: url("icons/zoom/Curtain.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopcurtain:value(1){
+  background-image: url("icons/zoom/Curtain white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopdvdplayer{
+  background-image: url("icons/zoom/DVD player.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopdvdplayer:value(1){
+  background-image: url("icons/zoom/DVD player white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopfan{
+  background-image: url("icons/zoom/Fan.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopfan:value(1){
+  background-image: url("icons/zoom/Fan white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopgamecontroller{
+  background-image: url("icons/zoom/Game controller.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopgamecontroller:value(1){
+  background-image: url("icons/zoom/Game controller white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontophdmi{
+  background-image: url("icons/zoom/HDMI.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontophdmi:value(1){
+  background-image: url("icons/zoom/HDMI white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontophelp{
+  background-image: url("icons/zoom/help_outline_black_24dp.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontophelp:value(1){
+  background-image: url("icons/zoom/help_outline_black_24dp_white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopprojector{
+  background-image: url("icons/zoom/Projector.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopprojector:value(1){
+  background-image: url("icons/zoom/Projector white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontoprackequipment{
+  background-image: url("icons/zoom/Rack equipment.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontoprackequipment:value(1){
+  background-image: url("icons/zoom/Rack equipment white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopsatdish{
+  background-image: url("icons/zoom/Satellite dish.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopsatdish:value(1){
+  background-image: url("icons/zoom/Satellite dish white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopsnowflake{
+  background-image: url("icons/zoom/Snowflake.svg");
+  background-position: center;
+  background-size: 80%;
+}
+
+.icontopsnowflake:value(1){
+  background-image: url("icons/zoom/Snowflake white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+.icontopspeakerphone{
+  background-image: url("icons/zoom/Speaker phone.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopspeakerphone:value(1){
+  background-image: url("icons/zoom/Speaker phone white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopspeaker{
+  background-image: url("icons/zoom/Speaker.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopspeaker:value(1){
+  background-image: url("icons/zoom/Speaker white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopstatus{
+  background-image: url("icons/zoom/ssid_chart_black_24dp.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopstatus:value(1){
+  background-image: url("icons/zoom/ssid_chart_white_24dp.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopsun{
+  background-image: url("icons/zoom/Sun.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontopsun:value(1){
+  background-image: url("icons/zoom/Sun white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontoptv{
+  background-image: url("icons/zoom/tv_black_24dp.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
+
+.icontoptv:value(1){
+  background-image: url("icons/zoom/tv_black_24dp_white.svg");
+  background-position: top 25%;
+  background-size: 25%;
+}
